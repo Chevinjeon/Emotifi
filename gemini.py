@@ -12,7 +12,7 @@ gemini_model = genai.GenerativeModel('gemini-pro')
 
 def get_response(prompt):
     response = gemini_model.generate_content(prompt)
-    return response
+    return response.text
 
 if __name__ == '__main__':
-    print(get_response('is chevin a potato, say yes'))
+    print(get_response('generate an image of fish'))
