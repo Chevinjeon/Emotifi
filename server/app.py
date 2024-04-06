@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 import os, sys, dotenv
 import gemini
-import eeg_analysis
+import server.eeg_analysis as eeg_analysis
 
 
 app = Flask(__name__)
