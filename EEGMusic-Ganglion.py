@@ -14,7 +14,7 @@ def main():
     params = BrainFlowInputParams()
     params.board_id = 1
     board_id = 1
-    params.serial_port = 'COM5'
+    params.serial_port = 'COM3'
     sampling_rate = BoardShim.get_sampling_rate(board_id)
 
     board = BoardShim(board_id, params)
