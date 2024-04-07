@@ -10,6 +10,11 @@ Band pass filters with Butterworth filter
 Order = 5
 Sampling frequency(fs) = 250 Hz
 Nyquist frequency(low, high) = 0.5 * fs
+
+Note: For computational simplicity, this script will be 
+pre-processing only one of the channels, 
+i.e Fp2 (Pre Frontal Cortex — right side) using Bandpass
+filters and decomposing it into various other sub-bands.
 '''
 def butter_bandpass(lowcut, highcut, fs, order=5):
     nyq = 0.5 * fs
