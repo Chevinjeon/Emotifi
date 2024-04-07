@@ -1,4 +1,0 @@
-
-
-def analyze():
-    pass

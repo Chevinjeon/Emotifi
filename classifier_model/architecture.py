@@ -1,6 +1,7 @@
 import torch
 from torch import nn, utils
 
+model_path = 'classifier.pt'
 
 class Classifier(nn.Module):
 

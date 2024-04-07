@@ -1,19 +1,3 @@
-# pip install -q -U google-generativeai
-import google.generativeai as genai
-import os, dotenv
-
-
-dotenv.load_dotenv()
-GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
-
-genai.configure(api_key=GEMINI_API_KEY)
-
-gemini_model = genai.GenerativeModel('gemini-pro')
-
-def get_response(prompt):
-    response = gemini_model.generate_content(prompt)
-    return response.text
-
 
 music_prompt = """I need assistance in producing AI-generated text
 that I convert to music using MIDI files. Initially,
@@ -116,13 +100,3 @@ modes, etc.
 Now that you have a full understanding of the
 text representation, generate a happy melogy.
 """
-
-def get_music_response(mood):
-    
-    return get_response(music_prompt)
-
-def get_caption_response(mood):
-    pass
-
-if __name__ == '__main__':
-    print(get_music_response('happ'))
