@@ -140,3 +140,16 @@ const tick = () =>
 }
 
 tick()
+
+window.addEventListener('scroll', () => {
+    const scrollPosition = window.scrollY;
+    const content = document.getElementById('content');
+    const fadeStart = 100; // start fade at 100px scroll
+    const fadeEnd = 500; // fully faded at 500px scroll 
+
+    let opacity = 1;
+    if (scrollPosition > fadeStart) {
+        opacity = 1 - ((scrollPosition - fadeStart) / (fadeEnd - fadeStart));
+    }
+    content.style.opacity = opacity.toString();
+});

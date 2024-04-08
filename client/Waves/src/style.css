@@ -14,22 +14,30 @@ body
     font-family: 'Poppins', sans-serif;
 }
 
-#welcome-container{ 
+#content{ 
     position: absolute;
-    top: 50%;
+    top: 10%;
     left: 50%;
-    transform: translate(-50%, -50%); 
-    width: 80%;
-    max-width: 600px;
-    padding: 20px;
+    transform: translateX(-50%); 
+    width: 90%;
+    max-width: 1200px;
     background: rgba(255, 255, 255, 0.8);
     border-radius: 15px;
     z-index: 10;
-    text-align: center;
+    padding: 20px 40px;
 }
 
-#welcome-container p { 
-    color: #555;
+#content section { 
+    margin-bottom: 20px;
+}
+
+#content h1, #content h2 { 
+    color: #b9cde2;
+    margin-bottom: 10px;
+}
+
+#content p { 
+    color: #b3b1b1;
     font-weight: 400;
     line-height: 1.6;
 }
