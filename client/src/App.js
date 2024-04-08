@@ -69,7 +69,7 @@ function App() {
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
-    }, 3000); 
+    }, 2599); 
   };
 
   useEffect(() => {
@@ -90,6 +90,22 @@ function App() {
     };
   }, []);
 
+  /*
+  // Scroll event listener to play audio at bottom of the page 
+  useEffect(() => { 
+    const handleScroll = () => { 
+      const bottom = Math.ceil(window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight;
+      if (bottom && file) {
+        audioRef.current.play(); 
+      } 
+    };
+    window.addEventListener('scroll', handleScroll);
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [file]); // Depend on file to ensure this effect runs when the file changes 
+
+*/
+
 
   return (
     <div className="App">
@@ -106,7 +122,6 @@ function App() {
           <p>Scroll Down</p>
         </div>
       )}
-      {/* New elements for file upload, audio play, and canvas */}
       <input
         type="file"
         onChange={({ target: { files } }) => files[0] && setFile(files[0])}
