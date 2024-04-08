@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import './App.css';
 import VideoComponent from './Components/VideoComponent'; // Adjust the path as per your project structure
 import ImageGenerator from './Assets/ImageGenerator/ImageGenerator';
@@ -6,11 +6,25 @@ import Animation from './Assets/Animation.mp4';
 import { FaArrowDown } from 'react-icons/fa'; 
 import { useEffect } from 'react';
 
+let animationController;
+
 function App() {
 
+  // Existing state and refs (video constants)
   const [isLoading, setIsLoading] = useState(false);
   const [showArrow, setShowArrow] = useState(false);
   const [showImage, setShowImage] = useState(false); // Add this state variable
+
+  //webaudio constants
+  const [file, setFile] = useState(null);
+  const canvasRef = useRef();
+  const audioRef = useRef(); 
+  const source = useRef(); 
+  const analyzer = useRef();
+
+  const handleAudioPlay = () => {};
+  const visualizeData = () => {}; 
+
 
   const handleGenerate = () => {
     setIsLoading(true);
