@@ -50,4 +50,4 @@ def img2img(init_img_path, mood):
     return result_img_path
 
 
-image_to_image('init2.png', 'spooky atmosphere, halloween, late night, very dark color')
+# img2img('init2.png', 'spooky atmosphere, halloween, late night, very dark color')

@@ -1,4 +1,8 @@
 
+
+def get_story_prompt(mood):
+    return 'Describe the image with exactly 500 words'
+
 music_prompt = """I need assistance in producing AI-generated text
 that I convert to music using MIDI files. Initially,
 I'll provide a description of the format I need for

@@ -3,7 +3,7 @@ import argparse
 import numpy as np
 import pandas as pd
 from brainflow.board_shim import BoardShim, BrainFlowInputParams
-
+import os
 
 '''
 Collecting raw EEG with Ultracortex headset

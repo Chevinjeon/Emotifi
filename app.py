@@ -14,7 +14,14 @@ import eeg_analyzer
 
 app = Flask(__name__)
 cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
+
+@app.route('/test', methods=['GET'])
+@cross_origin()
+def test():
+    return {
+        'message': "received request"
+    }
+
 
 @app.route('/infer-mood', methods=['POST'])
 @cross_origin()
@@ -61,12 +68,13 @@ def generate_text():
     request.files['input_img'].save(input_img_path)
 
     if img_type == 'abstract':
-        return Response(gemini.stream_story(input_img_path, mood), mimetype='text/event-stream')
+        gemini.stream_story(input_img_path, mood)
+        return {
+            'output': 'ye'
+        }
     
     elif img_type == 'modify':
         return Response(gemini.stream_desc(input_img_path, mood), mimetype='text/event-stream')
 
     
-
-
-    
+app.run(host='0.0.0.0', port=5000)
