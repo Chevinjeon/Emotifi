@@ -22,7 +22,10 @@ function App() {
   const source = useRef(); 
   const analyzer = useRef();
 
+   // Logic to handle audio play
   const handleAudioPlay = () => {};
+
+  // Visualization logic
   const visualizeData = () => {}; 
 
 
@@ -67,6 +70,21 @@ function App() {
           <p>Scroll Down</p>
         </div>
       )}
+      {/* New elements for file upload, audio play, and canvas */}
+      <input
+        type="file"
+        onChange={({ target: { files } }) => files[0] && setFile(files[0])}
+      />
+      {file && (
+        <audio
+          ref={audioRef}
+          onPlay={handleAudioPlay}
+          src={window.URL.createObjectURL(file)}
+          controls
+        />
+      )}
+      <canvas ref={canvasRef} width={500} height={200} />
+
     </div>
   );
 }
