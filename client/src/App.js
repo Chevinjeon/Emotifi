@@ -106,6 +106,25 @@ function App() {
 
 */
 
+/*connect React application with backend route for create_audio.py*/
+const handleGenerateMidi = async () => {
+  /*const notes =  convert data to the required format*/;
+  const response = await fetch('http://localhost:5000/generate-midi', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({notes}),
+  });
+
+  if (response.ok) { 
+    const blob = await response.blob();
+    const url = URL.createObjectUTL(blob);
+    setFile(url); //assuming setFile will then set the audio source 
+  } else {
+    console.error('Failed to generate MIDI');
+  }
+};
 
   return (
     <div className="App">
