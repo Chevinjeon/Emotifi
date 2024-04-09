@@ -1,6 +1,9 @@
+from flask import Flask, request, send_file 
+from flask_cors import CORS 
 import mido
 import pygame
 import os
+import uuid 
 
 # midi creation config
 TICKS_PER_BEAT = 480
@@ -26,7 +29,7 @@ def create_midi(notes):
         midi_track.append(mido.Message(type='note_on', note=note, velocity=64, time=0))
         midi_track.append(mido.Message(type='note_off', note=note, velocity=64, time=int(duration * TICKS_PER_SECOND)))
 
-    midi_file.save(MIDI_PATH)
+    midi_file.save(midi_path)
 
 
 def play_midi(midi_path):
@@ -113,3 +116,22 @@ melody_pitch_duration_data = [
 (0, 1),
 ]"""
     generate_music(melody_pitch_duration_data)
+
+
+app = Flask(__name__)
+CORS(app) # Enable CORS for all routes 
+
+@app.route('/generate-midi', methods=['POST'])
+def generate_midi():
+    data = request.json 
+    notes = data['notes']
+
+    file_id = str(uuid.uuid4())
+    midi_path = f'{file_id}.midi'
+
+    create_midi(notes, midi_path) 
+
+    return send_file(midi_path, as_attachment=True, attachment_filename='')
+
+if __name__ == '__main__':
+    app.run(debug=TRUE)
