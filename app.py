@@ -38,25 +38,7 @@ def infer_mood():
         'result': mood_result
     }
 
-
-@app.route('/generate-image', methods=['POST'])
-@cross_origin()
-def generate_image():
-
-    mood = request.form.get('mood')
-    img_type = request.form.get('img_type')
-
-    if img_type == 'abstract':
-        result_img_path = imagen.new_abstract(mood)
-
-    elif img_type == 'modify':
-        init_img_path = 'init_img.png'
-        request.files['init_img'].save(init_img_path)
-        result_img_path = imagen.img2img(init_img_path, mood)
-        os.remove(init_img_path)
-    
-    return send_file(result_img_path, mimetype='image/gif')
-    @app.route('/analyze-image', methods=['POST'])
+@app.route('/analyze-image', methods=['POST'])
 def analyze_image():
     if 'image' not in request.files:
         return jsonify({'error': 'No image file provided'}), 400
@@ -65,8 +47,12 @@ def analyze_image():
     image_bytes = image.read()
     base64_image = base64.b64encode(image_bytes).decode('utf-8')
 
-    # Hardcoded prompt
-    prompt = "You are a professional art therapist and you are analyzing an artwork generated from a person with ADHD. The artwork was created based on the mood they are feeling. Tell us your artistic interpretation of the art and how the person with ADHD might be feeling at the psychological level."
+    # Infer mood from some eeg_analyzer ? , placeholder for actual implementation
+    # mood_result = eeg_analyzer.infer(file_id)
+    mood_result = "happy"  # Placeholder for demonstration
+
+    # Dynamically construct the prompt with the mood result (ideally)
+    prompt = f"You are a professional art therapist and you are analyzing an artwork generated from a person with ADHD. Their mood is {mood_result}. The artwork was created based on the mood they are feeling. Tell us your artistic interpretation of the art and how the person with ADHD might be feeling at the psychological level."
 
     API_KEY = os.getenv('GEMINI_API_KEY')
     headers = {'Authorization': f'Bearer {API_KEY}'}
