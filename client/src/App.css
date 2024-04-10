@@ -81,3 +81,43 @@
   z-index: 10;
   font-size: 16px;
 }
+.custom-file-input {
+  /* Hiding the default file input button */
+  opacity: 0;
+  width: 0.1px;
+  height: 0.1px;
+  position: absolute;
+}
+
+.custom-file-input + label {
+  display: inline-block;
+  margin: 0 auto;
+  /* Styling */
+  background-color: #4CAF50; /* Green background */
+  color: white; /* White text */
+  padding: 20px; /* Bigger size */
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  font-size: 16px; /* Larger text */
+  /* Centering the button */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.custom-file-input:focus + label {
+  /* Style changes for when the input is focused */
+  outline: 1px dotted #000;
+  outline: -webkit-focus-ring-color auto 5px;
+}
+
+.custom-file-input + label:hover {
+  background-color: #45a049; /* Darker green background on hover */
+}
+.music-generator-heading h2 {
+  text-align: center; /* Center the heading text */
+  color: #333; /* Dark text color for better readability */
+  margin-top: 20px; /* Add some space above the heading */
+  font-size: 24px; /* Larger font size */
+}

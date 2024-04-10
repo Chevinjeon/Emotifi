@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './VideoComponent.css'; // Import the CSS file for styling
-import reading from '../Assets/reading.gif';
+import reading from '../Assets/reading.mp4';
 
 const ReadingComponent = () => {
   const [isVisible, setIsVisible] = useState(true);
@@ -14,7 +14,9 @@ const ReadingComponent = () => {
 
   return (
     <div className={isVisible ? 'video-container' : 'video-container fade-out'}>
-      <img src={reading} alt="Reading" width="1920" height="1080" />
+      <video width="1920" height="1080" autoPlay muted loop>
+      <source src={reading} type="video/mp4" />
+      </video>
     </div>
   );
 };

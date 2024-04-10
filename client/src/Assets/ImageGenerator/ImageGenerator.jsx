@@ -7,7 +7,7 @@ const ImageGenerator = () => {
 
     const fetchGeneratedImage = async ( mood, imgType) => {
         setIsLoading(true);
-        const formData = new formData();
+        const formData = new FormData();
         formData.append('mood', mood);
         formData.append('img_type', imgType);
 
