@@ -12,6 +12,9 @@ import gemini_RAG
 import imagen
 import eeg_analyzer
 
+import requests 
+import base64
+
 app = Flask(__name__)
 cors = CORS(app)
 
@@ -19,7 +22,6 @@ cors = CORS(app)
 @cross_origin()
 def test():
     return Response(gemini_RAG.get_test_response())
-
 
 
 @app.route('/infer-mood', methods=['POST'])
@@ -55,6 +57,49 @@ def generate_image():
     
     return send_file(result_img_path, mimetype='image/gif')
     
+@app.route('/analyze-image', methods=['POST'])
+def analyze_image():
+    # Check for image in the request
+    if 'image' not in request.files:
+        return jsonify({'error': 'No image file provided'}), 400
+
+    # Retrieve the prompt from the form data, if provided
+    prompt = request.form.get('prompt', '')
+
+    image = request.files['image']
+    image_bytes = image.read()
+    base64_image = base64.b64encode(image_bytes).decode('utf-8')
+
+    API_KEY = os.getenv('GEMINI_API_KEY')
+    headers = {'Authorization': f'Bearer {API_KEY}'}
+    payload = {
+        # Add your API-specific configuration here
+        "contents": [
+            {
+                "role": "user",
+                "parts": [
+                    { "text": prompt },
+                    {
+                        "inlineData": {
+                            "mimeType": image.content_type,  # Using the content type from the uploaded file
+                            "data": base64_image
+                        }
+                    },
+                ],
+            },
+        ],
+    }
+
+    # Send request to the Google Gemini API
+    response = requests.post('https://api.google-gemini.com/v1/generate', json=payload, headers=headers)
+
+    if response.status_code == 200:
+        analysis_result = response.json()
+        return jsonify(analysis_result)
+    else:
+        return jsonify({'error': 'Failed to analyze image'}), response.status_code
+
+
 """
 @app.route('/generate-text', methods=['POST'])
 @cross_origin()
@@ -69,4 +114,4 @@ def generate_text():
         return 'dadsad'
 """
     
-app.run(host='0.0.0.0', port=5000)
+app.run(host='0.0.0.0', port=5001)
