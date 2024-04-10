@@ -56,24 +56,21 @@ def generate_image():
         os.remove(init_img_path)
     
     return send_file(result_img_path, mimetype='image/gif')
-    
-@app.route('/analyze-image', methods=['POST'])
+    @app.route('/analyze-image', methods=['POST'])
 def analyze_image():
-    # Check for image in the request
     if 'image' not in request.files:
         return jsonify({'error': 'No image file provided'}), 400
-
-    # Retrieve the prompt from the form data, if provided
-    prompt = request.form.get('prompt', '')
 
     image = request.files['image']
     image_bytes = image.read()
     base64_image = base64.b64encode(image_bytes).decode('utf-8')
 
+    # Hardcoded prompt
+    prompt = "You are a professional art therapist and you are analyzing an artwork generated from a person with ADHD. The artwork was created based on the mood they are feeling. Tell us your artistic interpretation of the art and how the person with ADHD might be feeling at the psychological level."
+
     API_KEY = os.getenv('GEMINI_API_KEY')
     headers = {'Authorization': f'Bearer {API_KEY}'}
     payload = {
-        # Add your API-specific configuration here
         "contents": [
             {
                 "role": "user",
@@ -81,7 +78,7 @@ def analyze_image():
                     { "text": prompt },
                     {
                         "inlineData": {
-                            "mimeType": image.content_type,  # Using the content type from the uploaded file
+                            "mimeType": image.content_type,
                             "data": base64_image
                         }
                     },
@@ -90,7 +87,6 @@ def analyze_image():
         ],
     }
 
-    # Send request to the Google Gemini API
     response = requests.post('https://api.google-gemini.com/v1/generate', json=payload, headers=headers)
 
     if response.status_code == 200:
@@ -98,7 +94,6 @@ def analyze_image():
         return jsonify(analysis_result)
     else:
         return jsonify({'error': 'Failed to analyze image'}), response.status_code
-
 
 """
 @app.route('/generate-text', methods=['POST'])
