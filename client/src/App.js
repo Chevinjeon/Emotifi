@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import './App.css';
 import VideoComponent from './Components/VideoComponent'; // Adjust the path as per your project structure
+import ReadingComponent from './Components/ReadingComponent';
 import ImageGenerator from './Assets/ImageGenerator/ImageGenerator';
 import Animation from './Assets/Animation.mp4';
 import { FaArrowDown } from 'react-icons/fa'; 
@@ -64,7 +65,6 @@ function App() {
   }
   }; 
 
-
   const handleGenerate = () => {
     setIsLoading(true);
     setTimeout(() => {
@@ -106,9 +106,9 @@ function App() {
 
 */
 
-/*connect React application with backend route for create_audio.py*/
+/*connect React application with backend route for create_audio.py
 const handleGenerateMidi = async () => {
-  /*const notes =  convert data to the required format*/;
+  const notes =  convert data to the required format;
   const response = await fetch('http://localhost:5000/generate-midi', {
     method: 'POST',
     headers: {
@@ -125,9 +125,15 @@ const handleGenerateMidi = async () => {
     console.error('Failed to generate MIDI');
   }
 };
-
+*/
   return (
     <div className="App">
+
+      <div className="reading">
+        <h1>Reading your brain signals</h1>
+        <p>Brain signals are read through a device called EEG (electroencephalogram) that measures the electrical activity of the brain. The signals are then converted into audio and visual representations. Check out the video below to see what your brain signals can generate!</p>
+        <ReadingComponent src="./reading.gif" alt="Reading Brain Signals" />
+      </div>
       <div className="video-container">
         <header className="video-overlay-header">
           <h1>See what your EEG (electroencephalogram) brain signals can generate!</h1>
