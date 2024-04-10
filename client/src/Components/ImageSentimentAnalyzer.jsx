@@ -1,43 +1,56 @@
-// Importing necessary hooks and dependencies
 import React, { useState } from 'react';
 
-const ImageSentimentAnalyzer = ({ imageUrl }) => {
+const ImageSentimentAnalyzer = () => {
   const [analysisResult, setAnalysisResult] = useState('');
-  const [userInput, setUserInput] = useState('');
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const analyzeSentiment = async () => {
+  // Function to handle image upload
+  const handleImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedImage(e.target.files[0]);
+    }
+  };
+
+  // Function to upload the image to the Flask backend and get the analysis
+  const analyzeImageSentiment = async () => {
+    if (!selectedImage) {
+      alert('Please select an image first.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('image', selectedImage);
+
+    setIsLoading(true);
     try {
-      // Assuming you have a backend endpoint that calls Google Gemini API
-      const response = await fetch('/analyze-sentiment', {
+      const response = await fetch('http://localhost:5001/analyze-image', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ text: userInput }),
+        body: formData,
       });
 
-      if (!response.ok) throw new Error('Network response was not ok.');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
 
-      const result = await response.json();
-      setAnalysisResult(result.analysis); // Adjust according to the actual response structure
+      const data = await response.json();
+      setAnalysisResult(data); //  might need to adjust this depending on the structure of response
     } catch (error) {
-      console.error('Error fetching sentiment analysis:', error);
-      setAnalysisResult('Error analyzing sentiment. Please try again.');
+      console.error('Error during image analysis:', error);
+      setAnalysisResult('Error analyzing the image.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <div>
-      <h3>How does this artwork make you feel?</h3>
-      <textarea
-        value={userInput}
-        onChange={(e) => setUserInput(e.target.value)}
-        placeholder="Share your thoughts here..."
-        rows="4"
-        style={{ width: '100%', marginBottom: '10px' }}
-      ></textarea>
-      <button onClick={analyzeSentiment}>Analyze Sentiment</button>
-      {analysisResult && <p>Sentiment Analysis: {analysisResult}</p>}
+      <h3>Analyze your generated artwork</h3>
+      <input type="file" onChange={handleImageChange} accept="image/*" />
+      <button onClick={analyzeImageSentiment} disabled={isLoading}>
+        {isLoading ? 'Analyzing...' : 'Analyze Image'}
+      </button>
+      {analysisResult && <div><p>Analysis Result:</p><p>{JSON.stringify(analysisResult)}</p></div>}
     </div>
   );
 };
