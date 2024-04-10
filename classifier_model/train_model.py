@@ -13,10 +13,10 @@ from architecture import Classifier, model_path
 
 FLAGS = flags.FLAGS
 
-flags.DEFINE_integer('batch_size', 8, '')
+flags.DEFINE_integer('batch_size', 4, '')
 flags.DEFINE_integer('train_epochs', 100, '')
 flags.DEFINE_float('learning_rate', 1e-3, '')
-flags.DEFINE_float('evaluate', False, '')
+flags.DEFINE_bool('evaluate', False, '')
 
 
 def train_model():
@@ -40,7 +40,9 @@ def train_model():
         for batch_idx, (batchX, batchY) in tqdm(enumerate(train_dataloader)):
             batchX, batchY = batchX.to(device), batchY.to(device)
 
-            pred = Classifier(batchX) # [batch size, num classes]
+            # batchX: [batch size, seq, num channels]
+
+            pred = model(batchX)
             loss = loss_fn(pred, batchY)
 
             optimizer.zero_grad()
@@ -54,7 +56,7 @@ def train_model():
         
         logging.info(f'completed epoch: {epoch_idx + 1}. average loss: {epoch_loss}, average acc: {epoch_acc}')
         
-        torch.save(model.state_dict, model_path)
+        torch.save(model.state_dict(), model_path)
 
 
 def evaluate_model(model, test=True):
@@ -74,7 +76,7 @@ def evaluate_model(model, test=True):
     correct_sample = 0
 
     with open(log_file, 'a') as f:
-        log_file.write('NEW ______________________________________________________________________\n\n\n')
+        f.write('NEW ______________________________________________________________________\n\n\n')
 
     model.eval()
     with torch.no_grad():
@@ -83,17 +85,17 @@ def evaluate_model(model, test=True):
             exampleX, exampleY = exampleX.to(device), exampleY.to(device)
 
             pred = model(exampleX).squeeze()
-            pred_idx = torch.argmax(pred, dim=1)
+            pred_idx = torch.argmax(pred, dim=0).item()
 
             label = exampleY.squeeze()
-            label_idx = torch.argmax(label, dim=1)
+            label_idx = torch.argmax(label, dim=0).item()
 
             if pred_idx == label_idx:
                 correct_sample += 1
             total_sample += 1
             
             with open(log_file, 'a') as f:
-                log_file.write(f'predicted: {idx_to_class[pred_idx]}, actual: {idx_to_class[label_idx]}\n')
+                f.write(f'predicted: {idx_to_class[pred_idx]}, actual: {idx_to_class[label_idx]}\n')
             
     return correct_sample / total_sample
 
@@ -106,7 +108,7 @@ if __name__ == '__main__':
     logging.info('process started')
 
     if FLAGS.evaluate is True:
-        model = Classifier().to(device)
+        model = Classifier()
         model.load_state_dict(torch.load(model_path))
 
         evaluate_model(model, test=True)

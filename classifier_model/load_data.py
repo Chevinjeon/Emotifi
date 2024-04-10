@@ -42,21 +42,25 @@ def generate_split(num_samples):
 
 def format_data():
 
+    os.makedirs(os.path.join(formatted_data_folder, 'eeg'))
+    with open(os.path.join(formatted_data_folder, 'label.csv'), 'a') as label_file:
+        label_file.write('index,filename,mood\n')
+
     curr_idx = 0
 
     for file in os.listdir(raw_data_folder):
-        df = pd.read_csv(file)
+        df = pd.read_csv(os.path.join(raw_data_folder, file))
         total_rows = len(df)
 
         curr_row = 1
         while curr_row + sample_length <= len(df):
-            sample_chunk = df.iloc[curr_row:curr_row + sample_length, 1:]
+            sample_chunk = df.iloc[curr_row:curr_row + sample_length, :8]
             sample_array = sample_chunk.to_numpy()
 
             np.save(os.path.join(formatted_data_folder, 'eeg', f'{curr_idx}.npy'), sample_array)
 
             with open(os.path.join(formatted_data_folder, 'label.csv'), 'a') as label_file:
-                label = file.split('_')[0]
+                label = file.split('-')[0]
                 label_file.write(f'{curr_idx},{file},{label}\n')
 
             curr_row += sample_length
@@ -65,4 +69,6 @@ def format_data():
 
     generate_split(curr_idx)
 
+
+format_data()
 

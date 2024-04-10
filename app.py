@@ -8,19 +8,18 @@ import matplotlib.pyplot as plt
 import os, sys, dotenv
 import uuid
 
-import gemini
+import gemini_RAG
 import imagen
 import eeg_analyzer
 
 app = Flask(__name__)
 cors = CORS(app)
 
-@app.route('/test', methods=['GET'])
+@app.route('/test', methods=['POST'])
 @cross_origin()
 def test():
-    return {
-        'message': "received request"
-    }
+    return Response(gemini_RAG.get_test_response())
+
 
 
 @app.route('/infer-mood', methods=['POST'])
@@ -30,11 +29,11 @@ def infer_mood():
     assert(request.files['eeg'].filename.endswith('.csv'))
 
     file_id = str(uuid.uuid4())
-    request.files['eeg'].save(file_id + '.csv')
+    request.files['eeg'].save(os.path.join('data_transfer', file_id + '.csv'))
     
-    result = eeg_analyzer.infer(file_id)
+    mood_result = eeg_analyzer.infer(file_id)
     return {
-        'result': result
+        'result': mood_result
     }
 
 
@@ -56,25 +55,18 @@ def generate_image():
     
     return send_file(result_img_path, mimetype='image/gif')
     
-
+"""
 @app.route('/generate-text', methods=['POST'])
 @cross_origin()
 def generate_text():
 
     mood = request.form.get('mood')
-    img_type = request.form.get('img_type')
+    response_type = request.form.get('response_type')
 
-    input_img_path = 'input_img.png'
-    request.files['input_img'].save(input_img_path)
-
-    if img_type == 'abstract':
-        gemini.stream_story(input_img_path, mood)
-        return {
-            'output': 'ye'
-        }
-    
-    elif img_type == 'modify':
-        return Response(gemini.stream_desc(input_img_path, mood), mimetype='text/event-stream')
-
+    if response_type == 'advice':
+        return Response(gemini_RAG.get_advice(mood))
+    elif response_type == 'music':
+        return 'dadsad'
+"""
     
 app.run(host='0.0.0.0', port=5000)

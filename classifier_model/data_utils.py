@@ -1,5 +1,5 @@
 import torch
-from torch import utils, _nnpack_available
+from torch import utils
 import numpy as np
 import pandas as pd
 
@@ -7,33 +7,35 @@ import os, json
 
 
 
-label_path = 'dataset/label.csv'
-eeg_path = 'dataset/eeg'
+label_path = 'formatted_data/label.csv'
+eeg_path = 'formatted_data/eeg'
 
 class_to_idx = {
-    "happy": 1,
-    "sad": 2,
-    "neural": 3,
-    "relax": 4,
-    "fear": 5
+    "happy": 0,
+    "sad": 1,
+    "stressed": 2,
+    "relax": 3,
+    "fear": 4,
+    "angry": 5
 }
 
 idx_to_class = {
-    1: "happy",
-    2: "sad",
-    3: "neutral",
-    4: "relax",
-    5: "fear"
+    0: "happy",
+    1: "sad",
+    2: "stressed",
+    3: "relax",
+    4: "fear",
+    5: "angry"
 }
 
-def preproc_eeg():
-    pass
+def preproc_eeg(raw_eeg):
+    return raw_eeg
 
 class EEGDataset(utils.data.Dataset):
     def __init__(self, test=False, val=False):
 
-        self.label_path = 'dataset/label.csv'
-        self.eeg_path = 'dataset/eeg'
+        self.label_path = label_path
+        self.eeg_path = eeg_path
 
         self.num_classes = 5
 
@@ -59,7 +61,8 @@ class EEGDataset(utils.data.Dataset):
             label = class_to_idx[label_df.iloc[idx, 2]]
             labels.append(label)
         
-        self.X = preproc_eeg(eegs)
+        self.X = preproc_eeg(eegs) # shape: [num samples, seq length, num channels]
+        self.X = torch.tensor(np.array(self.X))
 
         self.Y = torch.eye(self.num_classes)[labels]
     
@@ -68,7 +71,7 @@ class EEGDataset(utils.data.Dataset):
     
     def __getitem__(self, index):
         X = self.X[index].type(torch.float32)
-        Y = self.Y[index].type(torch.int)
+        Y = self.Y[index].type(torch.float32)
         return X, Y
 
 

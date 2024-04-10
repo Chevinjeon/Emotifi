@@ -12,16 +12,24 @@ class Classifier(nn.Module):
         self.input_size = input_size
         self.output_size = output_size
 
-        self.lstm_input_dim = 64
+        self.lstm_input_dim = 256
         self.lstm_hidden_dim = 128
         self.num_lstm_layers = 2
         self.bidir_lstm = True
 
         # layer definition
         self.conv_layers = nn.Sequential(
-            nn.Conv1d(in_channels=self.input_size, out_channels=64, kernel_size=3, stride=1, padding=1),
+            nn.Conv1d(in_channels=self.input_size, out_channels=64, kernel_size=5, stride=1, padding=1),
             nn.ReLU(inplace=True),
             nn.AvgPool1d(kernel_size=2, stride=2),
+            
+            nn.Conv1d(in_channels=64, out_channels=128, kernel_size=5, stride=1, padding=1),
+            nn.ReLU(inplace=True),
+            nn.AvgPool1d(kernel_size=2, stride=2),
+
+            nn.Conv1d(in_channels=128, out_channels=256, kernel_size=5, stride=1, padding=1),
+            nn.ReLU(inplace=True),
+            nn.AvgPool1d(kernel_size=2, stride=2)
         )
 
         self.lstm_layer = nn.LSTM(
@@ -40,13 +48,16 @@ class Classifier(nn.Module):
         )
 
     def forward(self, x):
+
         x = x.permute(0, 2, 1)
-        x = self.conv_layers(x)
+        x = self.conv_layers(x) 
         x = x.permute(0, 2, 1)
 
         outputs, _ = self.lstm_layer(x)
-        
+        outputs = outputs[:, -1, :]
+
         outputs = self.linear_layer(outputs)
+        outputs = nn.functional.softmax(outputs, dim=1)
 
         return outputs
 
