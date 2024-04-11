@@ -15,6 +15,7 @@ import eeg_analyzer
 
 import requests 
 import base64
+import uuid 
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -86,6 +87,34 @@ def analyze_image():
     @app.route('/images/<filename>')
     def serve_image(filename):
         return send_from_directory('static/images', filename)
+    
+
+    @app.route('/handle-selection', methods=['POST'])
+    @cross_origin()
+    def handle_selection():
+        data = request.get_json()  # is the selection sent as JSON?
+        selection = data.get('option')
+
+        if selection == 'sample':
+            # Path to  EEGMeditation.csv?? file
+            csv_file_path = 'OpenBCI_GUI-v5-meditation.txt'
+            df = pd.read_csv(file_path, delimiter=",") # Check delimiter
+            file_id = str(uuid.uuid4())
+            temp_csv_path = os.path.join('data_transfer', file_id + '.csv')
+            df.to_csv(temp_csv_path)
+            mood_result = eeg_analyzer.infer(file_id)
+            # Cleanup?
+            os.remove(temp_csv_path)
+            return jsonify({'result': mood_result})
+        
+        elif selection == 'own':
+            # Path to OpenBCICyton.py script
+            script_path = 'OpenBCIConnection.py'
+            subprocess.run(['python', script_path])
+            return jsonify({'message': 'Script started successfully'})
+        else:
+            return jsonify({'error': 'Invalid selection'}), 400
+
 
 """
 @app.route('/generate-text', methods=['POST'])
