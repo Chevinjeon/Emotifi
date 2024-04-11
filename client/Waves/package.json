@@ -12,7 +12,11 @@
     "vite-plugin-glsl": "^1.1.2"
   },
   "dependencies": {
+    "classnames": "^2.5.1",
     "lil-gui": "^0.19.0",
+    "prop-types": "^15.8.1",
+    "react-router-dom": "^6.22.3",
+    "react-router-hash-link": "^2.4.3",
     "three": "^0.158.0"
   }
 }

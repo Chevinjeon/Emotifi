@@ -1,21 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import './VideoComponent.css'; // Import the CSS file for styling
-import reading from '../Assets/reading.mp4';
+// ReadingComponent.jsx
+import React from 'react';
+import './ReadingComponent.css';
+import reading from '../Assets/reading.mp4'; // Your video path
 
-const ReadingComponent = () => {
-  const [isVisible, setIsVisible] = useState(true);
-
-  useEffect(() => {
-    // set a timeout to change the state AFTER 3 SECONDS 
-    const timer = setTimeout(() => setIsVisible(false), 6000);
-
-    return () => clearTimeout(timer); 
-  }, []);
-
+const ReadingComponent = ({ isLoading, stopVideo }) => {
   return (
-    <div className={isVisible ? 'video-container' : 'video-container fade-out'}>
+    <div className="video-container">
+      {isLoading && (
+        <div className="loading-overlay">
+          Loading...
+        </div>
+      )}
       <video width="1920" height="1080" autoPlay muted loop>
-      <source src={reading} type="video/mp4" />
+        <source src={reading} type="video/mp4" />
       </video>
     </div>
   );

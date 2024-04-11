@@ -4,9 +4,11 @@ import VideoComponent from './Components/VideoComponent';
 import ImageSentimentAnalyzer from './Components/ImageSentimentAnalyzer';
 import ReadingComponent from './Components/ReadingComponent';
 import ImageGenerator from './Assets/ImageGenerator/ImageGenerator';
+import LandingComponent from './Components/LandingComponent'; 
 import Animation from './Assets/Animation.mp4';
 import { FaArrowDown } from 'react-icons/fa'; 
 import { useEffect } from 'react';
+import DropdownComponent from './Components/DropdownComponent';
 
 let animationController;
 
@@ -15,7 +17,18 @@ function App() {
   // Existing state and refs (video constants)
   const [isLoading, setIsLoading] = useState(false);
   const [showArrow, setShowArrow] = useState(false);
-  const [showImage, setShowImage] = useState(false); // Add this state variable
+  const [images, setImages] = useState([]); // To store fetched image URLs
+  const [stopVideo, setStopVideo] = useState(false);
+  const [showReadingComponent, setShowReadingComponent] = useState(false);
+
+  const fetchImages = async () => {
+    // ?? image fetch from backend, adjust endpoint as needed
+    const imageNames = ['beforeProcessing.jpg', 'afterProcessing.jpg'];
+    const fetchedImages = imageNames.map(name =>
+      `http://localhost:5001/images/${name}` // if Flask app runs on localhost:5001
+    );
+    setImages(fetchedImages);
+  };
 
   //webaudio constants
   const [file, setFile] = useState(null);
@@ -66,11 +79,18 @@ function App() {
   }
   }; 
 
-  const handleGenerate = () => {
+  // triggers loading
+  const handleGenerate = async () => {
     setIsLoading(true);
+    setShowReadingComponent(true);
+    
     setTimeout(() => {
+      console.log("Setting isLoading to false and stopping video");
+
       setIsLoading(false);
-    }, 2599); 
+      setStopVideo(true); // stop video in ReadingComponent
+      // fetchImages(); // fetch images after stopping the video 
+    }, 3000); 
   };
 
   useEffect(() => {
@@ -90,22 +110,6 @@ function App() {
       clearTimeout(timer2);
     };
   }, []);
-
-  /*
-  // Scroll event listener to play audio at bottom of the page 
-  useEffect(() => { 
-    const handleScroll = () => { 
-      const bottom = Math.ceil(window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight;
-      if (bottom && file) {
-        audioRef.current.play(); 
-      } 
-    };
-    window.addEventListener('scroll', handleScroll);
-
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [file]); // Depend on file to ensure this effect runs when the file changes 
-
-*/
 
 /*connect React application with backend route for create_audio.py
 const handleGenerateMidi = async () => {
@@ -129,17 +133,10 @@ const handleGenerateMidi = async () => {
 */
   return (
     <div className="App">
-
-      <div className="reading">
-        <h1>Reading your brain signals</h1>
-        <p>The OpenBCI Cyton headset analyzes your EEG (electroencephalogram) by measuring the electrical activity of the brain. The signals are then converted into audio and visual representations. Check out below to see what your brain signals can generate!</p>
-        <ReadingComponent src="./reading.gif" alt="Reading Brain Signals" />
-      </div>
-
-      <div className="video-container">
-        <header className="video-overlay-header">
-        </header>
-      </div>
+      <LandingComponent />
+      <DropdownComponent onClick={handleGenerate}/>
+      
+      {showReadingComponent && <ReadingComponent isLoading={isLoading} stopVideo={stopVideo} />}
 
       <ImageGenerator isLoading={isLoading} />
       {showArrow && (
@@ -170,6 +167,16 @@ const handleGenerateMidi = async () => {
         />
       )}
       <canvas ref={canvasRef} width={500} height={200} />
+
+      {images.map((url, index) => (
+        <div key={index}>
+          <img src={url} alt={index === 0 ? "Before Processing" : "After Processing"} />
+          <p>{index === 0 ? "Before" : "After"} processing EEG signals.</p>
+        </div>
+      ))}
+      <p>
+        Emotifi calls a BrainFlow BoardShim API to filter their EEG. This process involves leveraging a bandpass filter called Butter Worth to decompose data into component frequency bands optimal for analyzing emotional state, from very low frequency Delta waves oscillating at 0.1 Hertz to high-frequency Gamma waves oscillating at 40 Hertz. This pre-processed data is fed to a mood classifier ML model.
+      </p>
 
     </div>
   );
