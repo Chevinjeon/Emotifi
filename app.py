@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request, send_file, Response
 from flask_cors import CORS, cross_origin
+from flask import send_from_directory
 
 import numpy as np
 import pandas as pd
@@ -47,7 +48,7 @@ def analyze_image():
     image_bytes = image.read()
     base64_image = base64.b64encode(image_bytes).decode('utf-8')
 
-    # Infer mood from some eeg_analyzer ? , placeholder for actual implementation
+    # Infer mood from eeg_analyzer ? , placeholder for actual implementation
     # mood_result = eeg_analyzer.infer(file_id)
     mood_result = "happy"  # Placeholder for demonstration
 
@@ -80,6 +81,11 @@ def analyze_image():
         return jsonify(analysis_result)
     else:
         return jsonify({'error': 'Failed to analyze image'}), response.status_code
+
+    # EEG filtering visualizations for frontend
+    @app.route('/images/<filename>')
+    def serve_image(filename):
+        return send_from_directory('static/images', filename)
 
 """
 @app.route('/generate-text', methods=['POST'])
