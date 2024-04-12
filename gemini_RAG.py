@@ -77,7 +77,6 @@ Provide an analysis of the art piece and explain how the use of colors, tunes, a
 """
 
 def get_analysis(mood, img):
-    
     message = HumanMessage(
         content=[
             'type': 'text',

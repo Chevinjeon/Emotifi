@@ -19,7 +19,7 @@ import eeg_analyzer
 import create_audio
 
 app = Flask(__name__, static_folder='static')
-CORS(app, support_credentials=True, resources={r"/api/*": {"origins": "http://localhost:3000"},  r"/images/*": {"origins": "*"}})
+CORS(app, support_credentials=True, resources={r"/api/*": {"origins": "http://localhost:3000"},  r"/images/*": {"origins": "*"}, r"/get-art": {"origins": "*"}})
 
 @app.route('/test', methods=['POST'])
 @cross_origin()
@@ -44,22 +44,23 @@ def infer_mood():
 @app.route('/get-art', methods=['POST'])
 @cross_origin()
 def get_art():
-
+    data = request.json
     mood = request.form.get('mood')
 
     if mood == 'relaxed':
-        mood = 'relaxation and peace'
+        mood_description = 'relaxation and peace'
     elif mood == 'stressed':
-        mood == 'stress and anxiety'
+        mood_description == 'stress and anxiety'
     elif mood == 'angry':
-        mood == 'anger and frustration'
+        mood_description == 'anger and frustration'
     elif mood == 'excited':
-        mood == 'excite and energetic'
+        mood_description == 'excite and energetic'
     elif mood == 'fear':
-        mood == 'fear and unsettled'
-
-    img_path = 'abstract_art.png'
-    imagen.get_abstract_art(mood, img_path)
+        mood_description == 'fear and unsettled'
+    else:
+        mood_description = 'neutral'
+    img_path = 'static/images/abstract_art.png'
+    imagen.get_abstract_art(mood_description, img_path)
 
     return send_file(img_path, mimetype='image/png')
 
@@ -94,15 +95,11 @@ def analyze_image():
     return Response(gemini_RAG.get_analysis(mood, img), mimetype='text/event-stream')
 
 
-
-
-
 @app.route('/infer-mood-hardcoded', methods=['POST'])
 @cross_origin()
 def infer_mood_test():
     mood_result = "relaxed"
     return jsonify({'result': mood_result})
-
 
 
 @app.route('/images/<filename>')
