@@ -1,4 +1,5 @@
 import os, dotenv
+import base64
 
 from langchain_community.vectorstores import faiss
 from langchain_community.document_loaders import DirectoryLoader
@@ -41,7 +42,7 @@ llm = ChatGoogleGenerativeAI(model='gemini-pro', google_api_key=GEMINI_API_KEY, 
 
 """ PROMPT SETUP """
 
-raw_prompt_template = """You are a medical profession who will give useful and professional advice to a ADHD patient who is feeling {mood}
+raw_prompt_template = """You are a medical professional who will give useful advice to a ADHD patient who is feeling {mood}
 Use the provided context on ADHD treatments and therapy to give advice in bullet point form.
 Be sure to include a kind introduction and closing.
 
@@ -68,6 +69,12 @@ def get_advice(mood):
         print(chunk.content)
         yield chunk.content
 
+
+
+
+def get_analysis(img):
+
+def get_melody()
 
 from langchain_openai import ChatOpenAI
 llm2 = ChatOpenAI(model='gpt-4', temperature=0, streaming=True)
