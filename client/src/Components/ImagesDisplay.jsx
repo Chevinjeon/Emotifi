@@ -8,6 +8,7 @@ const ImagesDisplay = ({ beforeProcessingUrl, afterProcessingUrl }) => {
 
   useEffect(() => {
     const loadImageBefore = new Image();
+    const timestamp = Date.now();
     loadImageBefore.src = beforeProcessingUrl;
     loadImageBefore.onload = () => setLoadingBefore(false);
     loadImageBefore.onerror = () => {
@@ -16,7 +17,7 @@ const ImagesDisplay = ({ beforeProcessingUrl, afterProcessingUrl }) => {
     };
 
     const loadImageAfter = new Image();
-    loadImageAfter.src = afterProcessingUrl;
+    loadImageAfter.src = `${afterProcessingUrl}?${timestamp}`;
     loadImageAfter.onload = () => setLoadingAfter(false);
     loadImageAfter.onerror = () => {
       setError('Failed to load after processing image');
@@ -43,16 +44,14 @@ const ImagesDisplay = ({ beforeProcessingUrl, afterProcessingUrl }) => {
       </div>
 
       {!isLoading && !error && (
-        <>
-          <div className="image-container">
-            <h2>Before Processing</h2>
-            <img src={beforeProcessingUrl} alt="Before Processing" onError={() => setError('Failed to load before processing image')} />
-          </div>
-
-          <div className="image-container">
-            <h2>After Processing</h2>
-            <img src={afterProcessingUrl} alt="After Processing" onError={() => setError('Failed to load after processing image')} />
-          </div>
+        <><div className="image-container">
+        <h2>Before Processing</h2>
+        <img src={`${beforeProcessingUrl}?${Date.now()}`} alt="Before Processing" onError={() => setError('Failed to load before processing image')} />
+      </div>
+      <div className="image-container">
+        <h2>After Processing</h2>
+        <img src={`${afterProcessingUrl}?${Date.now()}`} alt="After Processing" onError={() => setError('Failed to load after processing image')} />
+      </div>
         </>
       )}
     </div>

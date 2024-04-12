@@ -18,8 +18,8 @@ import gemini_RAG
 import eeg_analyzer
 import create_audio
 
-app = Flask(__name__)
-CORS(app, support_credentials=True, resources={r"/api/*": {"origins": "http://localhost:3000"}})
+app = Flask(__name__, static_folder='static')
+CORS(app, support_credentials=True, resources={r"/api/*": {"origins": "http://localhost:3000"},  r"/images/*": {"origins": "*"}})
 
 @app.route('/test', methods=['POST'])
 @cross_origin()
