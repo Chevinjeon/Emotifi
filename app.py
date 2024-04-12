@@ -33,12 +33,35 @@ def infer_mood():
     assert(request.files['eeg'].filename.endswith('.csv'))
 
     file_id = str(uuid.uuid4())
-    request.files['eeg'].save(os.path.join('data_transfer', file_id + '.csv'))
+    request.files['eeg'].save(os.path.join(file_id + '.csv'))
 
     mood_result = eeg_analyzer.infer(file_id)
     return {
         'result': mood_result
     }
+
+
+@app.route('/get-art', methods=['POST'])
+@cross_origin()
+def get_art():
+
+    mood = request.form.get('mood')
+
+    if mood == 'relaxed':
+        mood = 'relaxation and peace'
+    elif mood == 'stressed':
+        mood == 'stress and anxiety'
+    elif mood == 'angry':
+        mood == 'anger and frustration'
+    elif mood == 'excited':
+        mood == 'excite and energetic'
+    elif mood == 'fear':
+        mood == 'fear and unsettled'
+
+    img_path = 'abstract_art.png'
+    imagen.get_abstract_art(mood, img_path)
+
+    return send_file(img_path, mimetype='image/png')
 
 
 @app.route('/get-advice', methods=['POST'])
@@ -64,20 +87,13 @@ def get_advice():
 @app.route('/analyze-image', methods=['POST'])
 @cross_origin()
 def analyze_image():
+
     mood = request.form.get('mood')
-    media = request.form.get('media')
     img = request.files['img']
-    img.save()
+    
+    return Response(gemini_RAG.get_analysis(mood, img), mimetype='text/event-stream')
 
-    if img.filename.endswith('.png') or img.filename.endswith('.jpg'):
-        if media == 'desc':
-            return Response(gemini_RAG.get_analysis(img), mimetype='text/event-stream') 
 
-        if media == 'music':
-            midi_path = 'music.midi'
-            melody_text = gemini_RAG.get_melody(img)
-            create_audio.generate_music(melody_text, midi_path)
-            return send_file(midi_path, mimetype='audio/midi')
 
 
 

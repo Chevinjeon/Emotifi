@@ -13,7 +13,7 @@ model = Classifier().to(device)
 model.load_state_dict(torch.load(model_path))
 
 def infer(file_id):
-    input_path = os.path.join('data_transfer', file_id + '.csv')
+    input_path = os.path.join(file_id + '.csv')
     eeg_df = pd.read_csv(input_path)
     eeg_array = eeg_df.iloc[1:, 1:9].to_numpy()
 

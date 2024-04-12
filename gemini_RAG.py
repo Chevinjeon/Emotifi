@@ -7,6 +7,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.prompts import PromptTemplate
 from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.messages import HumanMessage
 
 dotenv.load_dotenv()
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
@@ -40,18 +41,18 @@ faiss_vectors.save_local('faiss')
 llm = ChatGoogleGenerativeAI(model='gemini-pro', google_api_key=GEMINI_API_KEY, convert_system_message_to_human=True)
 
 
-""" PROMPT SETUP """
+""" ADVICE API """
 
-raw_prompt_template = """You are a medical professional who will give useful advice to a ADHD patient who is feeling {mood}
+advice_raw = """You are a medical professional who will give useful advice to a ADHD patient who is feeling {mood}
 Use the provided context on ADHD treatments and therapy to give advice in bullet point form.
 Be sure to include a kind introduction and closing.
 
 context: {context}
 """
 
-prompt_template = PromptTemplate(
+advice_template = PromptTemplate(
     input_variables=['mood', 'context'],
-    template=raw_prompt_template
+    template=advice_raw
 )
 
 
@@ -61,7 +62,7 @@ def get_advice(mood):
     context = ''
     for doc in relevant_content:
         context += doc.page_content + '\n\n'
-    prompt = prompt_template.format(
+    prompt = advice_template.format(
         mood=mood,
         context=context
     )
@@ -71,15 +72,19 @@ def get_advice(mood):
 
 
 
+analysis_raw = """The image provided is an abstract art piece that reflects the current mental state of a ADHD patient who is feeling {mood}
+Provide an analysis of the art piece and explain how the use of colors, tunes, and other artistic techniques are used to illustrate the patient's mood.
+"""
 
-def get_analysis(img):
-    pass
+def get_analysis(mood, img):
+    
+    message = HumanMessage(
+        content=[
+            'type': 'text',
+            'text': 
+        ]
+    )
+
+
 def get_melody():
     pass
-
-from langchain_openai import ChatOpenAI
-llm2 = ChatOpenAI(model='gpt-4', temperature=0, streaming=True)
-def get_test_response():
-    for chunk in llm2.stream('tell me a story in 30 words'):
-        print(chunk.content)
-        yield chunk.content
