@@ -5,11 +5,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os, sys, dotenv
 import uuid
-import gemini_RAG
 import imagen
-import eeg_analyzer
 import requests 
 import base64
+
+import gemini_RAG
+import eeg_analyzer
+import create_audio
 
 app = Flask(__name__)
 CORS(app, support_credentials=True, resources={r"/api/*": {"origins": "http://localhost:3000"}})
@@ -19,15 +21,77 @@ CORS(app, support_credentials=True, resources={r"/api/*": {"origins": "http://lo
 def test():
     return Response(gemini_RAG.get_test_response())
 
+@app.route('/infer-mood', methods=['POST'])
+@cross_origin()
+def infer_mood():
+    assert(request.files['eeg'].filename.endswith('.csv'))
+
+    file_id = str(uuid.uuid4())
+    request.files['eeg'].save(os.path.join('data_transfer', file_id + '.csv'))
+
+    mood_result = eeg_analyzer.infer(file_id)
+    return {
+        'result': mood_result
+    }
+
+
+@app.route('/get-advice', methods=['POST'])
+@cross_origin()
+def get_advice():
+
+    mood = request.form.get('mood')
+    
+    if mood == 'excited':
+        mood == 'excited, energetic'
+    elif mood == 'relaxed':
+        mood == 'relaxed, peaceful'
+    elif mood == 'stressed':
+        mood == 'stressed, tired, and worn out from anxiety'
+    elif mood == 'angry':
+        mood = 'angry, irritated'
+    elif mood == 'fear':
+        mood = 'fear, unsettled, and worried'
+
+    return Response(gemini_RAG.get_advice(mood), mimetype='text/event-stream')
+
+
+@app.route('/analyze-image', methods=['POST'])
+@cross_origin()
+def analyze_image():
+
+    mood = request.form.get('mood')
+    media = request.form.get('media')
+    img = request.files['img']
+    img.save()
+
+    assert(img.filename.endswith('.png') or img.filename.endswith('.jpg'))
+
+    if media == 'desc':
+        return Response(gemini_RAG.get_analysis(img), mimetype='text/event-stream') 
+
+    if media == 'music':
+        midi_path = 'music.midi'
+        melody_text = gemini_RAG.get_melody(img)
+        create_audio.generate_music(melody_text, midi_path)
+        return send_file(midi_path, mimetype='audio/midi')
+
+
+
+
+@app.route('/get-')
 @app.route('/test-test')
 def test_test():
     return "Test endpoint works!"
 
-@app.route('/infer-mood', methods=['POST'])
+@app.route('/infer-mood-hardcoded', methods=['POST'])
 @cross_origin()
-def infer_mood():
+def infer_mood_test():
     mood_result = "relaxed"
     return jsonify({'result': mood_result})
+
+
+
+@app.route('')
 
 @app.route('/analyze-image', methods=['POST'])
 @cross_origin()
