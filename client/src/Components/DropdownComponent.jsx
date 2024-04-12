@@ -18,23 +18,27 @@ const DropDownComponent = () => {
     }
 
     try {
-        const response = await fetch('http://your-flask-server:5001/handle-selection', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ option: selection })
-        });
-        if (response.ok) {
-            const data = await response.json();
-            console.log("Success:", data);
-            // Handle the response data here
-        } else {
-            throw new Error('Network response was not ok.');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-    }
+      const response = await fetch('http://localhost:5001/handle-selection', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ option: selection })
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      console.log("Success:", data);
+      // Optionally, update state to show the ReadingComponent
+      setShowReading(true);
+  } else {
+      const errorData = await response.text();  // Assuming the server might send plain text error messages
+      throw new Error(`Server responded with status ${response.status}: ${errorData}`);
+  }
+} catch (error) {
+  console.error('Error:', error.message);
+  alert(`Failed to fetch: ${error.message}`);
+}
 };
 
   return (

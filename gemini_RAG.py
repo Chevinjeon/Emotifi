@@ -9,6 +9,10 @@ from langchain_core.prompts import ChatPromptTemplate
 
 dotenv.load_dotenv()
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+print("Model: ", 'models/embedding-001')
+print("API Key: ", GEMINI_API_KEY)
+print("Task Type: ", 'retrieval_query')
+print(os.getenv('GEMINI_API_KEY')) 
 
 """ RAG SETUP """
 loader = DirectoryLoader(path='articles/', glob='*.txt')
