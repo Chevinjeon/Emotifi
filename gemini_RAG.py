@@ -73,8 +73,9 @@ def get_advice(mood):
 
 
 def get_analysis(img):
-
-def get_melody()
+    pass
+def get_melody():
+    pass
 
 from langchain_openai import ChatOpenAI
 llm2 = ChatOpenAI(model='gpt-4', temperature=0, streaming=True)

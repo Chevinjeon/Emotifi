@@ -3,10 +3,10 @@ import ReadingComponent from './ReadingComponent';
 import './DropdownComponent.css';
 import startbutton from '../Assets/startbutton.png'; // Adjust the path as needed
 
-const DropDownComponent = () => {
+const DropDownComponent = ({handleImageUpdate}) => {
   const [selection, setSelection] = useState('');
   const [showReading, setShowReading] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false); // State to manage loading indicator
   const handleSelectionChange = (event) => {
     setSelection(event.target.value);
   };
@@ -16,6 +16,8 @@ const DropDownComponent = () => {
         alert('Please make a selection first.');
         return;
     }
+    setIsLoading(true); // Start loading
+    setShowReading(true); //  state to show the ReadingComponent
 
     try {
       const response = await fetch('http://localhost:5001/handle-selection', {
@@ -29,8 +31,10 @@ const DropDownComponent = () => {
     if (response.ok) {
       const data = await response.json();
       console.log("Success:", data);
-      // Optionally, update state to show the ReadingComponent
-      setShowReading(true);
+      handleImageUpdate(
+        `http://localhost:5001/images/before_processing.png?${Date.now()}`,
+        `http://localhost:5001/images/after_processing.png?${Date.now()}`
+      );
   } else {
       const errorData = await response.text();  // Assuming the server might send plain text error messages
       throw new Error(`Server responded with status ${response.status}: ${errorData}`);
@@ -38,6 +42,8 @@ const DropDownComponent = () => {
 } catch (error) {
   console.error('Error:', error.message);
   alert(`Failed to fetch: ${error.message}`);
+} finally { 
+  setIsLoading(false); //end loading 
 }
 };
 
@@ -51,6 +57,7 @@ const DropDownComponent = () => {
       <div onClick={handleStartClick} style={{ cursor: 'pointer' }}>
         <img src={startbutton} alt="Start" className="startbutton" />
       </div>
+      {isLoading && <div>loading...</div>} 
       {showReading && <ReadingComponent />}
     </div>
   );

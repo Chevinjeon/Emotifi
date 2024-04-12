@@ -1,28 +1,60 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './ImagesDisplay.css'; 
 
-const ImagesDisplay = () => {
-  // Assuming Flask backend runs on localhost port 5001
-  const beforeProcessingUrl = 'http://localhost:5001/images/before_processing.png';
-  const afterProcessingUrl = 'http://localhost:5001/images/after_processing.png';
+const ImagesDisplay = ({ beforeProcessingUrl, afterProcessingUrl }) => {
+  const [loadingBefore, setLoadingBefore] = useState(true);
+  const [loadingAfter, setLoadingAfter] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const loadImageBefore = new Image();
+    loadImageBefore.src = beforeProcessingUrl;
+    loadImageBefore.onload = () => setLoadingBefore(false);
+    loadImageBefore.onerror = () => {
+      setError('Failed to load before processing image');
+      setLoadingBefore(false);
+    };
+
+    const loadImageAfter = new Image();
+    loadImageAfter.src = afterProcessingUrl;
+    loadImageAfter.onload = () => setLoadingAfter(false);
+    loadImageAfter.onerror = () => {
+      setError('Failed to load after processing image');
+      setLoadingAfter(false);
+    };
+
+    // Cleanup function to avoid setting state on unmounted component
+    return () => {
+      loadImageBefore.onload = null;
+      loadImageBefore.onerror = null;
+      loadImageAfter.onload = null;
+      loadImageAfter.onerror = null;
+    };
+  }, [beforeProcessingUrl, afterProcessingUrl]);
+
+  const isLoading = loadingBefore || loadingAfter; // True if either image is still loading
 
   return (
     <div className="images-display-container">
-
-        <div className="text-container">
-            <h2>EEG Bandpass Frequency Samples</h2>
-        </div>
-
-      <div className="image-container">
-        <h2>Before Processing</h2>
-        <img src={beforeProcessingUrl} alt="Before Processing" />
+      <div className="text-container">
+        <h2>EEG Bandpass Frequency Samples</h2>
+        {isLoading && <p>Loading images...</p>}
+        {error && <p>Error: {error}</p>}
       </div>
 
-      <div className="image-container">
-        <h2>After Processing</h2>
-        <img src={afterProcessingUrl} alt="After Processing" />
-      </div>
+      {!isLoading && !error && (
+        <>
+          <div className="image-container">
+            <h2>Before Processing</h2>
+            <img src={beforeProcessingUrl} alt="Before Processing" onError={() => setError('Failed to load before processing image')} />
+          </div>
 
+          <div className="image-container">
+            <h2>After Processing</h2>
+            <img src={afterProcessingUrl} alt="After Processing" onError={() => setError('Failed to load after processing image')} />
+          </div>
+        </>
+      )}
     </div>
   );
 };

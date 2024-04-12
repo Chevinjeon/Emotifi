@@ -1,4 +1,6 @@
 .video-container {
+    width: 350px; /* Makes the video responsive within the container */
+    height: auto;
     position: relative;
   }
   
