@@ -12,9 +12,9 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 model = Classifier().to(device)
 model.load_state_dict(torch.load(model_path))
 
-def infer(file_id):
-    input_path = os.path.join(file_id + '.csv')
-    eeg_df = pd.read_csv(input_path)
+def infer(eeg_path):
+    
+    eeg_df = pd.read_csv(eeg_path)
     eeg_array = eeg_df.iloc[1:, 1:9].to_numpy()
 
     eeg = preproc_eeg(eeg_array)

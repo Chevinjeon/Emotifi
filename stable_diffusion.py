@@ -6,7 +6,6 @@ dotenv.load_dotenv()
 
 sd_api_key = os.getenv('SD_API_KEY')
 
-
 def get_abstract_art(mood, img_path):
 
     response = requests.post(

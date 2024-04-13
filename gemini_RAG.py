@@ -11,10 +11,7 @@ from langchain_core.messages import HumanMessage
 
 dotenv.load_dotenv()
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
-print("Model: ", 'models/embedding-001')
-print("API Key: ", GEMINI_API_KEY)
-print("Task Type: ", 'retrieval_query')
-print(os.getenv('GEMINI_API_KEY')) 
+
 
 """ RAG SETUP """
 loader = DirectoryLoader(path='articles/', glob='*.txt')
@@ -55,8 +52,7 @@ advice_template = PromptTemplate(
     template=advice_raw
 )
 
-
-def get_advice(mood):
+def get_advice(mood, art):
 
     relevant_content = faiss_vectors.similarity_search(mood, k=10)
     context = ''
@@ -69,22 +65,3 @@ def get_advice(mood):
     for chunk in llm.stream(prompt):
         print(chunk.content)
         yield chunk.content
-
-
-
-analysis_raw = """The image provided is an abstract art piece that reflects the current mental state of a ADHD patient who is feeling {mood}
-Provide an analysis of the art piece and explain how the use of colors, tunes, and other artistic techniques are used to illustrate the patient's mood.
-"""
-
-def get_analysis(mood, img):
-    
-    message = HumanMessage(
-        content=[
-            'type': 'text',
-            'text': 
-        ]
-    )
-
-
-def get_melody():
-    pass

@@ -1,25 +1,22 @@
 from flask import Flask, jsonify, request, send_file, Response, send_from_directory, url_for
 from flask_cors import CORS, cross_origin
 from brainflow.board_shim import BoardShim, BrainFlowInputParams, LogLevels, BoardIds
-import numpy as np
-import pandas as pd
-import matplotlib
+
 import subprocess
-import matplotlib.pyplot as plt
 import os, sys, dotenv
 import uuid
-import imagen
-import eeg_analyzer 
+
 from eeg_analyzer import infer
-import requests 
-import base64
 
 import gemini_RAG
+import gemini
 import eeg_analyzer
 import create_audio
+import stable_diffusion
 
 app = Flask(__name__)
 CORS(app, support_credentials=True, resources={r"/api/*": {"origins": "http://localhost:3000"}})
+
 
 @app.route('/test', methods=['POST'])
 @cross_origin()
@@ -27,19 +24,27 @@ def test():
     return Response(gemini_RAG.get_test_response())
 
 
-@app.route('/infer-mood', methods=['POST'])
+@app.route('/infer-mood-brainwave', methods=['POST'])
 @cross_origin()
-def infer_mood():
+def infer_mood_brainwave():
     assert(request.files['eeg'].filename.endswith('.csv'))
+    
+    eeg_input_csv_path = 'eeg.csv'
+    request.files['eeg'].save(eeg_input_csv_path)
 
-    file_id = str(uuid.uuid4())
-    request.files['eeg'].save(os.path.join(file_id + '.csv'))
-
-    mood_result = eeg_analyzer.infer(file_id)
+    mood_result = eeg_analyzer.infer(eeg_input_csv_path)
     return {
         'result': mood_result
     }
 
+@app.route('/infer-mood-audio', methods=['POST'])
+@cross_origin()
+def infer_mood_audio():
+    assert(request.files['audio'].filename.endswith('.mp3'))
+
+    audio_input_mp3_path = 'speech.mp3'
+    mood_resul
+    
 
 @app.route('/get-art', methods=['POST'])
 @cross_origin()
@@ -54,14 +59,14 @@ def get_art():
     elif mood == 'angry':
         mood == 'anger and frustration'
     elif mood == 'excited':
-        mood == 'excite and energetic'
+        mood == 'excitement and energy'
     elif mood == 'fear':
         mood == 'fear and unsettled'
 
-    img_path = 'abstract_art.png'
-    imagen.get_abstract_art(mood, img_path)
+    art_output_png_path = 'abstract.png'
+    stable_diffusion.get_abstract_art(mood, art_output_png_path)
 
-    return send_file(img_path, mimetype='image/png')
+    return send_file(art_output_png_path, mimetype='image/png')
 
 
 @app.route('/get-advice', methods=['POST'])
@@ -69,19 +74,20 @@ def get_art():
 def get_advice():
 
     mood = request.form.get('mood')
+    art = request.form.get('art')
     
     if mood == 'excited':
-        mood == 'excited, energetic'
+        mood == 'excited and energetic'
     elif mood == 'relaxed':
-        mood == 'relaxed, peaceful'
+        mood == 'relaxed and peaceful'
     elif mood == 'stressed':
-        mood == 'stressed, tired, and worn out from anxiety'
+        mood == 'stressed, tired, and anxious'
     elif mood == 'angry':
-        mood = 'angry, irritated'
+        mood = 'angry and irritated'
     elif mood == 'fear':
         mood = 'fear, unsettled, and worried'
 
-    return Response(gemini_RAG.get_advice(mood), mimetype='text/event-stream')
+    return Response(gemini_RAG.get_advice(mood, art), mimetype='text/event-stream')
 
 
 @app.route('/analyze-image', methods=['POST'])
@@ -91,7 +97,18 @@ def analyze_image():
     mood = request.form.get('mood')
     img = request.files['img']
     
-    return Response(gemini_RAG.get_analysis(mood, img), mimetype='text/event-stream')
+    if mood == 'excited':
+        mood == 'excited and energetic'
+    elif mood == 'relaxed':
+        mood == 'relaxed and peaceful'
+    elif mood == 'stressed':
+        mood == 'stressed, tired, and anxious'
+    elif mood == 'angry':
+        mood = 'angry and irritated'
+    elif mood == 'fear':
+        mood = 'fear, unsettled, and worried'
+
+    return Response(gemini.get_analysis(mood, img), mimetype='text/event-stream')
 
 
 
