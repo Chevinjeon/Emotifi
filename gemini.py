@@ -15,9 +15,9 @@ audio_model = genai.GenerativeModel('models/gemini-1.5-pro-latest')
 
 """ ANALYSIS """
 
-def get_analysis(mood, img):
+def get_analysis(mood, img_path):
 
-    img = Image.open(img)
+    img = Image.open(img_path)
     prompt = f"""You are a professional art therapist and you are analyzing an abstract artwork based on a person with ADHD. 
     Their current mood is {mood}. The artwork was created based on the mood they are feeling. 
     Tell us your artistic interpretation of the art and how the person with ADHD might be feeling at the psychological level."

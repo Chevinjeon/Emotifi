@@ -75,11 +75,11 @@ def get_advice():
     art = request.form.get('art')
     
     if mood == 'excited':
-        mood_description == 'excited and energetic'
+        mood_description = 'excited and energetic'
     elif mood == 'relaxed':
-        mood_description == 'relaxed and peaceful'
+        mood_description = 'relaxed and peaceful'
     elif mood == 'stressed':
-        mood_description == 'stressed, tired, and anxious'
+        mood_description = 'stressed, tired, and anxious'
     elif mood == 'angry':
         mood_description = 'angry and irritated'
     elif mood == 'fear':
@@ -93,9 +93,12 @@ def get_advice():
 def analyze_image():
 
     mood = request.form.get('mood')
-    img = request.files['img']
+    art = request.files['art']
+
+    analysis_input_png_path = 'analysis_art.png'
+    art.save(analysis_input_png_path)
     
-    return Response(gemini_RAG.get_analysis(mood, img), mimetype='text/event-stream')
+    return Response(gemini.get_analysis(mood, analysis_input_png_path), mimetype='text/event-stream')
 
 
 @app.route('/infer-mood-hardcoded', methods=['POST'])
