@@ -1,15 +1,15 @@
-import { createContext, useContext, useState } from 'react';
+import React, { createContext, useState, useContext } from 'react';
 
-export const MoodContext = createContext(null);
+const MoodContext = createContext();
 
 export const useMood = () => useContext(MoodContext);
 
 export const MoodProvider = ({ children }) => {
-  const [mood, setMood] = useState('');
+    const [mood, setMood] = useState(null);  // Initialize with a default value if necessary
 
-  return (
-    <MoodContext.Provider value={{ mood, setMood }}>
-      {children}
-    </MoodContext.Provider>
-  );
+    return (
+        <MoodContext.Provider value={{ mood, setMood }}>
+            {children}
+        </MoodContext.Provider>
+    );
 };

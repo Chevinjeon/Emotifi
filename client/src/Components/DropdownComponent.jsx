@@ -2,13 +2,17 @@ import React, { useState } from 'react';
 import ReadingComponent from './ReadingComponent';
 import './DropdownComponent.css';
 import startbutton from '../Assets/startbutton.png'; // Adjust the path as needed
+import PropTypes from 'prop-types';
 
-const DropDownComponent = ({handleImageUpdate}) => {
+const DropDownComponent = ({onSelect, handleImageUpdate}) => {
   const [selection, setSelection] = useState('');
   const [showReading, setShowReading] = useState(false);
   const [isLoading, setIsLoading] = useState(false); // State to manage loading indicator
+  
   const handleSelectionChange = (event) => {
-    setSelection(event.target.value);
+    const selectedValue = event.target.value;
+    setSelection(selectedValue);
+    onSelect(selectedValue);
   };
 
   const handleStartClick = async () => {
@@ -47,9 +51,14 @@ const DropDownComponent = ({handleImageUpdate}) => {
 }
 };
 
+DropdownComponent.propTypes = {
+  onSelect: PropTypes.func.isRequired,
+  handleImageUpdate: PropTypes.func.isRequired,
+};
+
   return (
     <div>
-      <select onChange={handleSelectionChange} value={selection}>
+      <select onChange={handleSelectionChange}>
         <option value="">Select an option</option>
         <option value="sample">Use a sample brainwave recording</option>
         <option value="own">Use your own brainwaves - requires headset configuration</option>

@@ -16,9 +16,16 @@ import create_audio
 import stable_diffusion
 
 app = Flask(__name__, static_folder='static')
-CORS(app, support_credentials=True, resources={r"/api/*": {"origins": "http://localhost:3000"},  r"/images/*": {"origins": "*"}, r"/get-art": {"origins": "*"},
+CORS(app, 
+support_credentials=True, 
+resources=
+{r"/*": {"origins": "*"},
+r"/api/*": {"origins": "http://localhost:3000"},  
+r"/images/*": {"origins": "*"}, 
+r"/get-art": {"origins": "*", "methods": ["POST", "OPTIONS"]},
 r"/analyze-image": {"origins": "http://localhost:3000", "methods": ["POST", "OPTIONS"]},
-    "/get-advice": {"origins": "http://localhost:3000", "methods": ["POST", "OPTIONS"]}
+    "/get-advice": {"origins": "http://localhost:3000", "methods": ["POST", "OPTIONS"]},
+r"/infer-mood-brainwave": {"origins": "http://localhost:3000", "methods": ["POST", "OPTIONS"]}
 })
 
 
@@ -36,7 +43,7 @@ def stream():
     return Response(event_stream(), mimetype='text/event-stream')
 
 @app.route('/infer-mood-brainwave', methods=['POST'])
-@cross_origin()
+@cross_origin(origins="http://localhost:3000", methods=["POST"], allow_headers=["Content-Type", "Authorization"])
 def infer_mood_brainwave():
     assert(request.files['eeg'].filename.endswith('.csv'))
     
@@ -65,11 +72,11 @@ def infer_mood_audio():
 
 
 @app.route('/get-art', methods=['POST'])
-@cross_origin()
+@cross_origin(origins=["http://localhost:3000"])
 def get_art():
 
     mood = request.form.get('mood')
-
+    print(mood)
     if mood == 'relaxed':
         mood_description = 'relaxation and peace'
     elif mood == 'stressed':

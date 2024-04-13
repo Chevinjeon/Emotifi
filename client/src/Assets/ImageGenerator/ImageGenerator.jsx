@@ -1,22 +1,25 @@
-import React, { useState } from 'react';
-import axios from 'axios'; // Make sure axios is installed
-import './ImageGenerator.css'; // Assuming you have CSS for this component
+import React, { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
+import './ImageGenerator.css';
+import { useMood } from '../../Context/MoodContext';
 
-const ImageGenerator = ({ mood }) => {
+const ImageGenerator = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const { mood } = useMood(); // Use the mood from context
 
-  const fetchGeneratedImage = (mood, style) => {
+  useEffect(() => {
+    if (!mood) {
+      setError('Mood is not set yet');
+    }
+  }, [mood]); // Depend on mood changes
+
+  const fetchGeneratedImage = () => {
     setLoading(true);
     setError('');
-
-    // Construct the API URL and body data
     const apiUrl = 'http://localhost:5001/get-art';
-    const postData = {
-      mood: mood,
-      style: style
-    };
+    const postData = { mood: mood }; // Using mood from the context
 
     axios.post(apiUrl, postData, {
         headers: {
@@ -24,17 +27,16 @@ const ImageGenerator = ({ mood }) => {
         },
         responseType: 'blob'
     })
-      .then(response => {
-        const blob = new Blob([response.data], { type: 'image/png' });
-        const url = URL.createObjectURL(blob);
-        setImageUrl(url);
+    .then(response => {
+      const url = URL.createObjectURL(new Blob([response.data]));
+      setImageUrl(url);
         setLoading(false);
-      })
-      .catch(err => {
-        setError('Failed to load generated image');
+    })
+    .catch(err => {
+        setError('Failed to load generated image. ' + err.message);
         setLoading(false);
         console.error('Error fetching the generated image:', err);
-      });
+    });
   };
 
   return (
@@ -50,7 +52,7 @@ const ImageGenerator = ({ mood }) => {
         error && <p>Error: {error}</p>
       )}
       <p>This artwork is generated from your mood analyzed from your brainwave signals:</p>
-      <div className="generate-btn" onClick={() => fetchGeneratedImage('happy', 'abstract')}>
+      <div className="generate-btn" onClick={fetchGeneratedImage}>
         Request Image
       </div>
       <iframe src="https://open.spotify.com/embed/playlist/37i9dQZF1EIgG2NEOhqsD7?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>

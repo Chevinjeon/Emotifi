@@ -1,16 +1,20 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import ImagesDisplay from './Components/ImagesDisplay'; // Adjust the path as needed
-import { MoodProvider } from './Context/MoodContext'; 
+import { useMood, MoodProvider } from './Context/MoodContext'; 
 import './App.css';
 import EventStreamComponent from './Components/EventStreamComponent'
 import ImageSentimentAnalyzer from './Components/ImageSentimentAnalyzer';
 import ReadingComponent from './Components/ReadingComponent';
 import ImageGenerator from './Assets/ImageGenerator/ImageGenerator';
 import LandingComponent from './Components/LandingComponent'; 
+<<<<<<< HEAD
 import AudioRecorder from './Components/AudioRecorder';
+=======
+>>>>>>> 93bf912b (frontend)
 import { FaArrowDown } from 'react-icons/fa'; 
 import { useEffect } from 'react';
 import DropdownComponent from './Components/DropdownComponent';
+import InferMoodComponent from './Components/InferMoodComponent'; // Adjust path as necessary
 
 let animationController;
 
@@ -26,15 +30,29 @@ function App() {
   const [afterProcessingUrl, setAfterProcessingUrl] = useState('');
   const beforeUrl = 'http://localhost:5001/static/images/before_processing.png';
   const afterUrl = 'http://localhost:5001/static/images/after_processing.png';
+<<<<<<< HEAD
   const toggleRecordOption = (type) => {
     return () => {
         setRecordOption(type);
     };
 };
+=======
+  const [selection, setSelection] = useState('');
+  const handleSelectionChange = (value) => {
+    setSelection(value);
+  };
+  const handleSelect = (value) => {
+    console.log("Selected option:", value);
+    // additional logic here
+  };
+
+>>>>>>> 93bf912b (frontend)
   const handleImageUpdate = (beforeUrl, afterUrl) => {
     setBeforeProcessingUrl(beforeUrl);
     setAfterProcessingUrl(afterUrl);
   };
+
+  const { mood, setMood } = useMood() ?? {};
 
 
   //webaudio constants
@@ -143,13 +161,21 @@ const handleGenerateMidi = async () => {
     <div className="App">
       <LandingComponent />
       <EventStreamComponent />
-      <DropdownComponent onClick={handleGenerate} handleImageUpdate={handleImageUpdate}/>
-      
-      {showReadingComponent && <ReadingComponent isLoading={isLoading} stopVideo={stopVideo} />}
+      <DropdownComponent 
+        onSelect={setSelection} 
+        handleImageUpdate={handleImageUpdate} 
+        />
+        {selection === 'sample' && <InferMoodComponent />}
+        <ReadingComponent 
+          isLoading={isLoading} 
+          showReadingComponent={showReadingComponent} 
+        />
+      <div>Current mood: {mood}</div>; 
       <ImagesDisplay 
       beforeProcessingUrl={beforeUrl}
       afterProcessingUrl={afterUrl}
       />
+<<<<<<< HEAD
       <h1>React Media Recorder</h1>
       <div className="button-flex">
       <button onClick={toggleRecordOption("audio")}>
@@ -159,6 +185,8 @@ const handleGenerateMidi = async () => {
       <div>
       {recordOption === "audio" ? <AudioRecorder /> : <AudioRecorder />}
       </div>
+=======
+>>>>>>> 93bf912b (frontend)
       <ImageGenerator isLoading={isLoading} />
       {showArrow && (
         <div className="scroll-down">
