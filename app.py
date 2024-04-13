@@ -152,7 +152,7 @@ def analyze_image():
     }
 
 
-@app.route('/infer-mood-direct', methods=['POST'])
+@app.route('/infer-mood-hardcoded', methods=['POST'])
 @cross_origin()
 def infer_mood_direct():
     mood_result = "relaxed"
