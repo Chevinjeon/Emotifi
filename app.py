@@ -10,18 +10,35 @@ from eeg_analyzer import infer
 
 import gemini_RAG
 import gemini
+from gemini import get_analysis
 import eeg_analyzer
 import create_audio
 import stable_diffusion
 
 app = Flask(__name__, static_folder='static')
-CORS(app, support_credentials=True, resources={r"/api/*": {"origins": "http://localhost:3000"},  r"/images/*": {"origins": "*"}, r"/get-art": {"origins": "*"}})
+CORS(app, support_credentials=True, resources={r"/api/*": {"origins": "http://localhost:3000"},  r"/images/*": {"origins": "*"}, r"/get-art": {"origins": "*"},
+r"/analyze-image": {"origins": "http://localhost:3000", "methods": ["POST", "OPTIONS"]},
+    "/get-advice": {"origins": "http://localhost:3000", "methods": ["POST", "OPTIONS"]}
+})
 
 @app.route('/test', methods=['POST'])
 @cross_origin()
 def test():
     return Response(gemini_RAG.get_test_response())
 
+
+@app.route('/stream')
+def stream():
+    def event_stream():
+        count = 0
+        while True:
+            time.sleep(1)  # Simulate delay
+            count += 1
+            yield f"data: Server time {time.ctime()} count {count}\n\n"
+            if count == 10:
+                break
+
+    return Response(event_stream(), mimetype='text/event-stream')
 
 @app.route('/infer-mood-brainwave', methods=['POST'])
 @cross_origin()
@@ -126,8 +143,7 @@ def get_advice():
     """
     return Response(gemini_RAG.get_advice(mood_description, art), mimetype='text/event-stream')
 
-
-@app.route('/analyze-image', methods=['POST'])
+@app.route('/analyze-image', methods=['GET', 'POST'])
 @cross_origin()
 def analyze_image():
 
