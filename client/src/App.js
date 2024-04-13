@@ -7,10 +7,7 @@ import ImageSentimentAnalyzer from './Components/ImageSentimentAnalyzer';
 import ReadingComponent from './Components/ReadingComponent';
 import ImageGenerator from './Assets/ImageGenerator/ImageGenerator';
 import LandingComponent from './Components/LandingComponent'; 
-<<<<<<< HEAD
 import AudioRecorder from './Components/AudioRecorder';
-=======
->>>>>>> 93bf912b (frontend)
 import { FaArrowDown } from 'react-icons/fa'; 
 import { useEffect } from 'react';
 import DropdownComponent from './Components/DropdownComponent';
@@ -23,6 +20,7 @@ function App() {
   // Existing state and refs (video constants)
   const [isLoading, setIsLoading] = useState(false);
   const [showArrow, setShowArrow] = useState(false);
+  const [selection, setSelection] = useState(false);
   const [images, setImages] = useState([]); // To store fetched image URLs
   const [stopVideo, setStopVideo] = useState(false);
   const [showReadingComponent, setShowReadingComponent] = useState(false);
@@ -30,23 +28,11 @@ function App() {
   const [afterProcessingUrl, setAfterProcessingUrl] = useState('');
   const beforeUrl = 'http://localhost:5001/static/images/before_processing.png';
   const afterUrl = 'http://localhost:5001/static/images/after_processing.png';
-<<<<<<< HEAD
   const toggleRecordOption = (type) => {
     return () => {
         setRecordOption(type);
     };
 };
-=======
-  const [selection, setSelection] = useState('');
-  const handleSelectionChange = (value) => {
-    setSelection(value);
-  };
-  const handleSelect = (value) => {
-    console.log("Selected option:", value);
-    // additional logic here
-  };
-
->>>>>>> 93bf912b (frontend)
   const handleImageUpdate = (beforeUrl, afterUrl) => {
     setBeforeProcessingUrl(beforeUrl);
     setAfterProcessingUrl(afterUrl);
@@ -175,7 +161,6 @@ const handleGenerateMidi = async () => {
       beforeProcessingUrl={beforeUrl}
       afterProcessingUrl={afterUrl}
       />
-<<<<<<< HEAD
       <h1>React Media Recorder</h1>
       <div className="button-flex">
       <button onClick={toggleRecordOption("audio")}>
@@ -185,8 +170,6 @@ const handleGenerateMidi = async () => {
       <div>
       {recordOption === "audio" ? <AudioRecorder /> : <AudioRecorder />}
       </div>
-=======
->>>>>>> 93bf912b (frontend)
       <ImageGenerator isLoading={isLoading} />
       {showArrow && (
         <div className="scroll-down">

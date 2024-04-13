@@ -51,10 +51,6 @@ const DropDownComponent = ({onSelect, handleImageUpdate}) => {
 }
 };
 
-DropdownComponent.propTypes = {
-  onSelect: PropTypes.func.isRequired,
-  handleImageUpdate: PropTypes.func.isRequired,
-};
 
   return (
     <div>
