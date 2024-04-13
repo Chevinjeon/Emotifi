@@ -160,7 +160,7 @@ def analyze_image():
     return Response(gemini.get_analysis(mood, analysis_input_png_path), mimetype='text/event-stream')
 
 
-@app.route('/infer-mood-direct', methods=['POST'])
+@app.route('/infer-mood-hardcoded', methods=['POST'])
 @cross_origin()
 def infer_mood_direct():
     mood_result = "relaxed"
