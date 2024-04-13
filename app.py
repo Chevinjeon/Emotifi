@@ -61,16 +61,16 @@ def get_art():
     if mood == 'relaxed':
         mood_description = 'relaxation and peace'
     elif mood == 'stressed':
-        mood_description == 'stress and anxiety'
+        mood_description = 'stress and anxiety'
     elif mood == 'angry':
-        mood_description == 'anger and frustration'
+        mood_description = 'anger and frustration'
     elif mood == 'excited':
-        mood_description == 'excitement and energy'
+        mood_description = 'excitement and energy'
     elif mood == 'fear':
-        mood_description == 'fear and unsettled'
+        mood_description = 'fear and unsettled'
 
     art_output_png_path = 'abstract.png'
-    stable_diffusion.get_abstract_art(mood, art_output_png_path)
+    stable_diffusion.get_abstract_art(mood_description, art_output_png_path)
 
     return send_file(art_output_png_path, mimetype='image/png')
 
@@ -118,10 +118,12 @@ def get_advice():
     elif mood == 'fear':
         mood_description = 'fear, unsettled, and worried'
 
+    """"
     result_advice = gemini_RAG.get_advice(mood_description, art)
     return {
         'result': result_advice
     }
+    """
     return Response(gemini_RAG.get_advice(mood_description, art), mimetype='text/event-stream')
 
 
@@ -142,9 +144,9 @@ def analyze_image():
     return Response(gemini.get_analysis(mood, analysis_input_png_path), mimetype='text/event-stream')
 
 
-@app.route('/infer-mood-hardcoded', methods=['POST'])
+@app.route('/infer-mood-direct', methods=['POST'])
 @cross_origin()
-def infer_mood_test():
+def infer_mood_direct():
     mood_result = "relaxed"
     return jsonify({'result': mood_result})
 
@@ -152,6 +154,7 @@ def infer_mood_test():
 @app.route('/images/<filename>')
 def serve_image(filename):
     return send_from_directory(app.static_folder + '/images', filename)
+
 
 @app.route('/handle-selection', methods=['POST', 'OPTIONS'])
 @cross_origin(origins="http://localhost:3000", allow_headers=['Content-Type', 'Authorization'], supports_credentials=True)
@@ -182,6 +185,7 @@ def handle_selection():
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)

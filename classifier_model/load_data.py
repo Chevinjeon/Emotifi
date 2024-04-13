@@ -60,7 +60,7 @@ def format_data():
             np.save(os.path.join(formatted_data_folder, 'eeg', f'{curr_idx}.npy'), sample_array)
 
             with open(os.path.join(formatted_data_folder, 'label.csv'), 'a') as label_file:
-                label = file.split('-')[0]
+                label = file.split('_')[0]
                 label_file.write(f'{curr_idx},{file},{label}\n')
 
             curr_row += sample_length

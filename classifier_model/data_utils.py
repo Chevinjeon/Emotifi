@@ -11,21 +11,19 @@ label_path = 'formatted_data/label.csv'
 eeg_path = 'formatted_data/eeg'
 
 class_to_idx = {
-    "happy": 0,
-    "sad": 1,
+    "excited": 0,
+    "relaxed": 1,
     "stressed": 2,
-    "relax": 3,
-    "fear": 4,
-    "angry": 5
+    "angry": 3,
+    "fear": 5
 }
 
 idx_to_class = {
-    0: "happy",
-    1: "sad",
+    0: "excited",
+    1: "relaxed",
     2: "stressed",
-    3: "relax",
+    3: "angry",
     4: "fear",
-    5: "angry"
 }
 
 def fft_eeg(raw_eeg):
@@ -51,8 +49,7 @@ def moving_average(input, window_size=5):
 def preproc_eeg(raw_eeg):
 
     processed_eeg = np.fft.fft(raw_eeg, axis=1)
-    processed_eeg = moving_average(processed_eeg)
-    
+    # processed_eeg = moving_average(processed_eeg)
     return processed_eeg
 
 
