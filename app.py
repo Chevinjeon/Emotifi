@@ -48,7 +48,7 @@ def infer_mood_audio():
 @app.route('/get-art', methods=['POST'])
 @cross_origin()
 def get_art():
-    data = request.json
+
     mood = request.form.get('mood')
 
     if mood == 'relaxed':
@@ -60,7 +60,7 @@ def get_art():
     elif mood == 'excited':
         mood_description == 'excitement and energy'
     elif mood == 'fear':
-        mood == 'fear and unsettled'
+        mood_description == 'fear and unsettled'
 
     art_output_png_path = 'abstract.png'
     stable_diffusion.get_abstract_art(mood, art_output_png_path)
