@@ -7,7 +7,7 @@ import ImageSentimentAnalyzer from './Components/ImageSentimentAnalyzer';
 import ReadingComponent from './Components/ReadingComponent';
 import ImageGenerator from './Assets/ImageGenerator/ImageGenerator';
 import LandingComponent from './Components/LandingComponent'; 
-import AudioInputComponent from './Components/AudioInputComponent';
+import AudioRecorder from './Components/AudioRecorder';
 import { FaArrowDown } from 'react-icons/fa'; 
 import { useEffect } from 'react';
 import DropdownComponent from './Components/DropdownComponent';
@@ -15,7 +15,7 @@ import DropdownComponent from './Components/DropdownComponent';
 let animationController;
 
 function App() {
-
+  let [recordOption, setRecordOption] = useState("audio");
   // Existing state and refs (video constants)
   const [isLoading, setIsLoading] = useState(false);
   const [showArrow, setShowArrow] = useState(false);
@@ -26,7 +26,11 @@ function App() {
   const [afterProcessingUrl, setAfterProcessingUrl] = useState('');
   const beforeUrl = 'http://localhost:5001/static/images/before_processing.png';
   const afterUrl = 'http://localhost:5001/static/images/after_processing.png';
-
+  const toggleRecordOption = (type) => {
+    return () => {
+        setRecordOption(type);
+    };
+};
   const handleImageUpdate = (beforeUrl, afterUrl) => {
     setBeforeProcessingUrl(beforeUrl);
     setAfterProcessingUrl(afterUrl);
@@ -146,7 +150,15 @@ const handleGenerateMidi = async () => {
       beforeProcessingUrl={beforeUrl}
       afterProcessingUrl={afterUrl}
       />
-      <AudioInputComponent />
+      <h1>React Media Recorder</h1>
+      <div className="button-flex">
+      <button onClick={toggleRecordOption("audio")}>
+                  Record Audio
+                </button>
+      </div>
+      <div>
+      {recordOption === "audio" ? <AudioRecorder /> : <AudioRecorder />}
+      </div>
       <ImageGenerator isLoading={isLoading} />
       {showArrow && (
         <div className="scroll-down">
