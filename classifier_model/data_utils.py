@@ -28,8 +28,33 @@ idx_to_class = {
     5: "angry"
 }
 
+def fft_eeg(raw_eeg):
+    processed_eeg = np.zeros_like(raw_eeg, dtype=np.float32)
+
+    for i in range(len(raw_eeg)):
+        for j in range(len(raw_eeg[0][0])):
+            processed_eeg[i, :, j] = np.fft.fft(raw_eeg[i, :, j])
+    return processed_eeg
+
+
+def moving_average(input, window_size=5):
+    kernel = np.ones(window_size) / window_size
+    convolved = np.zeros(shape=(input.shape[0], input.shape[1] - window_size + 1, input.shape[2]))
+
+    for example in range(input.shape[0]):
+        for channel in range(input.shape[2]):
+            convolved[example, :, channel] = np.convolve(input[example, :, channel], kernel, mode='valid')
+
+    return convolved
+
+
 def preproc_eeg(raw_eeg):
-    return raw_eeg
+
+    processed_eeg = np.fft.fft(raw_eeg, axis=1)
+    processed_eeg = moving_average(processed_eeg)
+    
+    return processed_eeg
+
 
 class EEGDataset(utils.data.Dataset):
     def __init__(self, test=False, val=False):
@@ -61,8 +86,10 @@ class EEGDataset(utils.data.Dataset):
             label = class_to_idx[label_df.iloc[idx, 2]]
             labels.append(label)
         
+
         self.X = preproc_eeg(eegs) # shape: [num samples, seq length, num channels]
         self.X = torch.tensor(np.array(self.X))
+
 
         self.Y = torch.eye(self.num_classes)[labels]
     

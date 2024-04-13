@@ -53,6 +53,7 @@ class Classifier(nn.Module):
         x = self.conv_layers(x) 
         x = x.permute(0, 2, 1)
 
+        print(x.shape)
         outputs, _ = self.lstm_layer(x)
         outputs = outputs[:, -1, :]
 
