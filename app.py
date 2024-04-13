@@ -41,8 +41,16 @@ def infer_mood_brainwave():
 def infer_mood_audio():
     assert(request.files['audio'].filename.endswith('.mp3'))
 
+    audio = request.files['audio']
+
     audio_input_mp3_path = 'speech.mp3'
-    mood_result
+    audio.save(audio_input_mp3_path)
+    mood_result = gemini.get_mood_from_audio(audio_input_mp3_path)
+
+    return {
+        'result': mood_result
+    }
+
 
 @app.route('/get-art', methods=['POST'])
 @cross_origin()

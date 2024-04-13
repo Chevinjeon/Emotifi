@@ -8,7 +8,7 @@ const ImageSentimentAnalyzer = () => {
     const fetchAnalysisResult = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch('http://localhost:5001/get-analysis');
+        const response = await fetch('http://localhost:5001/analyze-image');
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
