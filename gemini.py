@@ -28,30 +28,25 @@ def get_analysis(mood, img):
         yield chunk.text
 
 
-def get_mood_from_audio(audio_path)
-    
-    audio = genai.upload_file(path=audio_path)
-    prompt = f"""The given audio is a conversation between an ADHD patient and a psychological therapist.
-    Based on the content of the conversation, deduce the current mood of the ADHD patient as exactly one of the following
-
-    relaxed
-    stressed
-    angry
-    fear
-    excited
-
-    Respond in the form of the following json
-    {
-        "mood": mood_result
-    }
-
-    where mood_result is one of relaxed, stressed, angry, fear, excited
-    """
-
-    response = audio_model.generate_content([prompt, audio], stream=True):
-
+#def get_mood_from_audio(audio_path):
+#    return
+#    audio = genai.upload_file(path=audio_path)
+#    prompt = f"""The given audio is a conversation between an ADHD patient and a psychological therapist.
+#    Based on the content of the conversation, deduce the current mood of the ADHD patient as exactly one of the following
+#    relaxed
+#    stressed
+#   angry
+#   fear
+#   excited
+#    Respond in the form of the following json
+#    {
+#        "mood": mood_result
+#   }
+#    where mood_result is one of relaxed, stressed, angry, fear, excited
+#   """
+#    response = audio_model.generate_content([prompt, audio], stream=True):
     # filter out json
-    response = '{' + response.split('{')[1]
-    response = response.split('}')[0] + '}'
-    response = json.loads(response)
-    return response.mood
+#    response = '{' + response.split('{')[1]
+#   response = response.split('}')[0] + '}'
+#   response = json.loads(response)
+#   return response.mood
