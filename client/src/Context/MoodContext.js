@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from 'react';
 
-const MoodContext = createContext(null);
+export const MoodContext = createContext(null);
 
 export const useMood = () => useContext(MoodContext);
 
