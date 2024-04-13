@@ -74,6 +74,31 @@ def get_art():
 
     return send_file(art_output_png_path, mimetype='image/png')
 
+@app.route('/get-music', methods=['POST'])
+@cross_origin()
+def get_music():
+
+    music_output_midi_path = 'music.mid'
+    os.remove(music_output_midi_path)
+
+    mood = request.form.get('mood')
+
+    if mood == 'excited':
+        mood_description = 'excited and energetic'
+    elif mood == 'relaxed':
+        mood_description = 'relaxed and peaceful'
+    elif mood == 'stressed':
+        mood_description = 'stressed and tired',
+    elif mood == 'angry':
+        mood_description = 'angry and frustrated'
+    elif mood == 'fear':
+        mood_description = 'fear and unsettled'
+    
+
+    notes = gemini.get_music(mood_description)
+    create_audio.create_midi(notes, music_output_midi_path)
+
+    return send_file(music_output_midi_path, mimetype='audio/midi')
 
 @app.route('/get-advice', methods=['POST'])
 @cross_origin()
@@ -89,10 +114,14 @@ def get_advice():
     elif mood == 'stressed':
         mood_description = 'stressed, tired, and anxious'
     elif mood == 'angry':
-        mood_description = 'angry and irritated'
+        mood_description = 'angry and frustrated'
     elif mood == 'fear':
         mood_description = 'fear, unsettled, and worried'
 
+    result_advice = gemini_RAG.get_advice(mood_description, art)
+    return {
+        'result': result_advice
+    }
     return Response(gemini_RAG.get_advice(mood_description, art), mimetype='text/event-stream')
 
 
@@ -106,6 +135,10 @@ def analyze_image():
     analysis_input_png_path = 'analysis_art.png'
     art.save(analysis_input_png_path)
     
+    result_analysis = gemini.get_analysis(mood, analysis_input_png_path)
+    return {
+        'result': result_analysis
+    }
     return Response(gemini.get_analysis(mood, analysis_input_png_path), mimetype='text/event-stream')
 
 

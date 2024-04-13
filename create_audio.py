@@ -50,16 +50,6 @@ def play_midi(midi_path):
         raise SystemExit
 
 
-def generate_music(text, midi_path):
-
-    # text preproc
-    text = text.replace(' ', '').replace('\n', '')
-    text = '[' + text.split('[')[1]
-    text = text.split(']')[0] + ']'
-
-    notes = [(int(x), float(y)) for x, y in eval(text)]
-
-    create_midi(notes, midi_path)
 
 """
 app = Flask(__name__)

@@ -62,6 +62,9 @@ def get_advice(mood, art):
         mood=mood,
         context=context
     )
+    response = llm.invoke(prompt)
+    return response.text
+
     for chunk in llm.stream(prompt):
         print(chunk.content)
         yield chunk.content
