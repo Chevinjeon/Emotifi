@@ -23,6 +23,8 @@ function App() {
   const [showReadingComponent, setShowReadingComponent] = useState(false);
   const [beforeProcessingUrl, setBeforeProcessingUrl] = useState('');
   const [afterProcessingUrl, setAfterProcessingUrl] = useState('');
+  const beforeUrl = 'http://localhost:5001/static/images/before_processing.png';
+  const afterUrl = 'http://localhost:5001/static/images/after_processing.png';
 
   const handleImageUpdate = (beforeUrl, afterUrl) => {
     setBeforeProcessingUrl(beforeUrl);
@@ -148,8 +150,8 @@ const handleGenerateMidi = async () => {
       
       {showReadingComponent && <ReadingComponent isLoading={isLoading} stopVideo={stopVideo} />}
       <ImagesDisplay 
-      beforeProcessingUrl={beforeProcessingUrl}
-      afterProcessingUrl={afterProcessingUrl}
+      beforeProcessingUrl={beforeUrl}
+      afterProcessingUrl={afterUrl}
       />
       <ImageGenerator isLoading={isLoading} />
       {showArrow && (

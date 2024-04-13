@@ -14,9 +14,8 @@ import eeg_analyzer
 import create_audio
 import stable_diffusion
 
-app = Flask(__name__)
-CORS(app, support_credentials=True, resources={r"/api/*": {"origins": "http://localhost:3000"}})
-
+app = Flask(__name__, static_folder='static')
+CORS(app, support_credentials=True, resources={r"/api/*": {"origins": "http://localhost:3000"},  r"/images/*": {"origins": "*"}, r"/get-art": {"origins": "*"}})
 
 @app.route('/test', methods=['POST'])
 @cross_origin()
@@ -49,17 +48,17 @@ def infer_mood_audio():
 @app.route('/get-art', methods=['POST'])
 @cross_origin()
 def get_art():
-
+    data = request.json
     mood = request.form.get('mood')
 
     if mood == 'relaxed':
-        mood = 'relaxation and peace'
+        mood_description = 'relaxation and peace'
     elif mood == 'stressed':
-        mood == 'stress and anxiety'
+        mood_description == 'stress and anxiety'
     elif mood == 'angry':
-        mood == 'anger and frustration'
+        mood_description == 'anger and frustration'
     elif mood == 'excited':
-        mood == 'excitement and energy'
+        mood_description == 'excitement and energy'
     elif mood == 'fear':
         mood == 'fear and unsettled'
 
@@ -97,21 +96,7 @@ def analyze_image():
     mood = request.form.get('mood')
     img = request.files['img']
     
-    if mood == 'excited':
-        mood == 'excited and energetic'
-    elif mood == 'relaxed':
-        mood == 'relaxed and peaceful'
-    elif mood == 'stressed':
-        mood == 'stressed, tired, and anxious'
-    elif mood == 'angry':
-        mood = 'angry and irritated'
-    elif mood == 'fear':
-        mood = 'fear, unsettled, and worried'
-
-    return Response(gemini.get_analysis(mood, img), mimetype='text/event-stream')
-
-
-
+    return Response(gemini_RAG.get_analysis(mood, img), mimetype='text/event-stream')
 
 
 @app.route('/infer-mood-hardcoded', methods=['POST'])
@@ -119,7 +104,6 @@ def analyze_image():
 def infer_mood_test():
     mood_result = "relaxed"
     return jsonify({'result': mood_result})
-
 
 
 @app.route('/images/<filename>')

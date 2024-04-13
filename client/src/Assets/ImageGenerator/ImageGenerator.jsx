@@ -1,53 +1,61 @@
 import React, { useState } from 'react';
-import './ImageGenerator.css';
+import axios from 'axios'; // Make sure axios is installed
+import './ImageGenerator.css'; // Assuming you have CSS for this component
 
-const ImageGenerator = () => {
-    const [imageSrc, setImageSrc] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
+const ImageGenerator = ({ mood }) => {
+  const [imageUrl, setImageUrl] = useState('');
+  const [isLoading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-    const fetchGeneratedImage = async ( mood, imgType) => {
-        setIsLoading(true);
-        const formData = new FormData();
-        formData.append('mood', mood);
-        formData.append('img_type', imgType);
+  const fetchGeneratedImage = (mood, style) => {
+    setLoading(true);
+    setError('');
 
-        // Append 'init_img' to formData if modifying an existing image 
-        //formData.append('init_img', file); // if imgType is 'modify' 
-
-        try { 
-            const response = await fetch('http://localhost:5000/generate-image', {
-                method: 'POST', 
-                body: formData, 
-            });
-
-            if (!response.ok) throw new Error('Network response was not ok.');
-
-            const blob = await response.blob();
-            setImageSrc(URL.createObjectURL(blob));
-        } catch (error) {
-            console.error('Error fetching generate image: ', error);
-        } finally { 
-            setIsLoading(false);
-        }
+    // Construct the API URL and body data
+    const apiUrl = 'http://localhost:5001/get-art';
+    const postData = {
+      mood: mood,
+      style: style
     };
-    
 
-    return (
-        <div className='ai-image-generator'>
-            <div className="header">Emotion AI <span>Visualization</span></div>
-            
-                {isLoading ? (
-                    <p>Loading...</p>
-                )  : (
-                    <div className="image">
-                        {/* <img src={images[imageIndex]} /> */}
-                   </div>
-                )}
-            <p>This artwork is generated from your brainwave signals:</p>
-            <div className="generate-btn" onClick={()=>fetchGeneratedImage('happy', 'abstract')}>Request Image</div>
-            <iframe src="https://open.spotify.com/embed/playlist/37i9dQZF1EIgG2NEOhqsD7?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    axios.post(apiUrl, postData, {
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        responseType: 'blob'
+    })
+      .then(response => {
+        const blob = new Blob([response.data], { type: 'image/png' });
+        const url = URL.createObjectURL(blob);
+        setImageUrl(url);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError('Failed to load generated image');
+        setLoading(false);
+        console.error('Error fetching the generated image:', err);
+      });
+  };
+
+  return (
+    <div className='ai-image-generator'>
+      <div className="header">Emotion AI <span>Visualization</span></div>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : imageUrl ? (
+        <div className="image">
+          <img src={imageUrl} alt="Generated Art" onError={() => setError('Failed to load image')} />
         </div>
-    );
+      ) : (
+        error && <p>Error: {error}</p>
+      )}
+      <p>This artwork is generated from your mood analyzed from your brainwave signals:</p>
+      <div className="generate-btn" onClick={() => fetchGeneratedImage('happy', 'abstract')}>
+        Request Image
+      </div>
+      <iframe src="https://open.spotify.com/embed/playlist/37i9dQZF1EIgG2NEOhqsD7?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
+  );
 };
 
 export default ImageGenerator;
