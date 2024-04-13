@@ -42,8 +42,7 @@ def infer_mood_audio():
     assert(request.files['audio'].filename.endswith('.mp3'))
 
     audio_input_mp3_path = 'speech.mp3'
-    mood_resul
-    
+    mood_result
 
 @app.route('/get-art', methods=['POST'])
 @cross_origin()
@@ -76,17 +75,17 @@ def get_advice():
     art = request.form.get('art')
     
     if mood == 'excited':
-        mood == 'excited and energetic'
+        mood_description == 'excited and energetic'
     elif mood == 'relaxed':
-        mood == 'relaxed and peaceful'
+        mood_description == 'relaxed and peaceful'
     elif mood == 'stressed':
-        mood == 'stressed, tired, and anxious'
+        mood_description == 'stressed, tired, and anxious'
     elif mood == 'angry':
-        mood = 'angry and irritated'
+        mood_description = 'angry and irritated'
     elif mood == 'fear':
-        mood = 'fear, unsettled, and worried'
+        mood_description = 'fear, unsettled, and worried'
 
-    return Response(gemini_RAG.get_advice(mood, art), mimetype='text/event-stream')
+    return Response(gemini_RAG.get_advice(mood_description, art), mimetype='text/event-stream')
 
 
 @app.route('/analyze-image', methods=['POST'])
