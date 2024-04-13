@@ -21,11 +21,6 @@ r"/analyze-image": {"origins": "http://localhost:3000", "methods": ["POST", "OPT
     "/get-advice": {"origins": "http://localhost:3000", "methods": ["POST", "OPTIONS"]}
 })
 
-@app.route('/test', methods=['POST'])
-@cross_origin()
-def test():
-    return Response(gemini_RAG.get_test_response())
-
 
 @app.route('/stream')
 def stream():
@@ -91,6 +86,7 @@ def get_art():
 
     return send_file(art_output_png_path, mimetype='image/png')
 
+
 @app.route('/get-music', methods=['POST'])
 @cross_origin()
 def get_music():
@@ -122,7 +118,7 @@ def get_music():
 def get_advice():
 
     mood = request.form.get('mood')
-    art = request.form.get('art')
+    
     
     if mood == 'excited':
         mood_description = 'excited and energetic'
@@ -135,13 +131,11 @@ def get_advice():
     elif mood == 'fear':
         mood_description = 'fear, unsettled, and worried'
 
-    """"
-    result_advice = gemini_RAG.get_advice(mood_description, art)
     return {
-        'result': result_advice
+        "result": gemini_RAG.get_advice(mood_description)
     }
-    """
-    return Response(gemini_RAG.get_advice(mood_description, art), mimetype='text/event-stream')
+    # return Response(gemini_RAG.get_advice(mood_description), content_type='text/event-stream')
+
 
 @app.route('/analyze-image', methods=['GET', 'POST'])
 @cross_origin()
@@ -153,11 +147,9 @@ def analyze_image():
     analysis_input_png_path = 'analysis_art.png'
     art.save(analysis_input_png_path)
     
-    result_analysis = gemini.get_analysis(mood, analysis_input_png_path)
     return {
-        'result': result_analysis
+        'result': gemini.get_analysis(mood, analysis_input_png_path)
     }
-    return Response(gemini.get_analysis(mood, analysis_input_png_path), mimetype='text/event-stream')
 
 
 @app.route('/infer-mood-direct', methods=['POST'])

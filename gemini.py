@@ -16,35 +16,15 @@ audio_model = genai.GenerativeModel('models/gemini-1.5-pro-latest')
 
 """ ANALYSIS """
 def get_analysis(mood, img_path):
-    try:
-        img = Image.open(img_path)
-        prompt = f"""
-        You are a professional art therapist analyzing an abstract artwork based on a person with ADHD.
-        Their current mood is {mood}. The artwork was created based on the mood they are feeling.
-        Tell us your artistic interpretation of the art and how the person with ADHD might be feeling at the psychological level.
-        """
-        for chunk in vision_model.generate_content([prompt, img], stream=True):
-            print("Chunk received:", chunk)  # Debug output to inspect the chunk structure
-            if hasattr(chunk, 'result') and hasattr(chunk.result, 'candidates'):
-                for candidate in chunk.result.candidates:
-                    if 'content' in candidate and 'parts' in candidate['content']:
-                        for part in candidate['content']['parts']:
-                            if 'text' in part:
-                                yield f"data: {{'message': '{part['text']}'}}\n\n"
-                            else:
-                                yield 'data: {"error": "Part without text"}\n\n'
-                    else:
-                        yield 'data: {"error": "Candidate without content or parts"}\n\n'
-            else:
-                yield 'data: {"error": "Malformed response, missing result or candidates"}\n\n'
-    except IOError as e:
-        yield f"data: {{'error': 'IOError: {str(e)}'}}\n\n"
-    except Exception as error:
-        print("Error during content generation:", error)  # Print the error to the console
-        yield f'data: {{"error": "Unhandled exception: {str(error)}"}}\n\n'
+    img = Image.open(img_path)
+    prompt = f"""
+    You are a professional art therapist analyzing an abstract artwork based on a person with ADHD.
+    Their current mood is {mood}. The artwork was created based on the mood they are feeling.
+    Tell us your artistic interpretation of the art and how the person with ADHD might be feeling at the psychological level.
+    """
 
-
-
+    response = vision_model.generate_content([prompt, img], stream=False)
+    return response.text
 
 def get_music(mood):
 

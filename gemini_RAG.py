@@ -23,6 +23,7 @@ text_splitter = RecursiveCharacterTextSplitter(
     separators=['\n\n\n', '\n\n', '\n', ' ', '']
 )
 
+
 text = text_splitter.split_documents(documents=docs)
 
 faiss_vectors = faiss.FAISS.from_documents(
@@ -30,7 +31,6 @@ faiss_vectors = faiss.FAISS.from_documents(
     embedding=GoogleGenerativeAIEmbeddings(model='models/embedding-001', google_api_key=GEMINI_API_KEY, task_type='retrieval_query')
 )
 faiss_vectors.save_local('faiss')
-
 
 
 """ LLM SETUP """
@@ -52,7 +52,7 @@ advice_template = PromptTemplate(
     template=advice_raw
 )
 
-def get_advice(mood, art):
+def get_advice(mood):
 
     relevant_content = faiss_vectors.similarity_search(mood, k=10)
     context = ''
@@ -62,8 +62,6 @@ def get_advice(mood, art):
         mood=mood,
         context=context
     )
-    
-    for chunk in llm.stream(prompt):
-        print(chunk.content)
-        yield chunk.content
-    
+
+    response = llm.invoke(prompt)
+    return response.content
