@@ -5,7 +5,7 @@ const MoodContext = createContext();
 export const useMood = () => useContext(MoodContext);
 
 export const MoodProvider = ({ children }) => {
-    const [mood, setMood] = useState(null);  // Initialize with a default value if necessary
+    const [mood, setMood] = useState('angry');  // Initialize with a default value if necessary
 
     return (
         <MoodContext.Provider value={{ mood, setMood }}>

@@ -24,7 +24,7 @@ r"/api/*": {"origins": "http://localhost:3000"},
 r"/images/*": {"origins": "*"}, 
 r"/get-art": {"origins": "*", "methods": ["POST", "OPTIONS"]},
 r"/analyze-image": {"origins": "http://localhost:3000", "methods": ["POST", "OPTIONS"]},
-    "/get-advice": {"origins": "http://localhost:3000", "methods": ["POST", "OPTIONS"]},
+r"/get-advice": {"origins": "http://localhost:3000", "methods": ["POST", "OPTIONS"]},
 r"/infer-mood-brainwave": {"origins": "http://localhost:3000", "methods": ["POST", "OPTIONS"]}
 })
 
@@ -71,11 +71,11 @@ def infer_mood_audio():
     }
 
 
-@app.route('/get-art', methods=['POST'])
+@app.route('/get-art', methods=['GET'])
 @cross_origin(origins=["http://localhost:3000"])
 def get_art():
 
-    mood = request.form.get('mood')
+    mood = request.args.get('mood')
     print(mood)
     if mood == 'relaxed':
         mood_description = 'relaxation and peace'
@@ -88,11 +88,11 @@ def get_art():
     elif mood == 'fear':
         mood_description = 'fear and unsettled'
 
-    art_output_png_path = 'abstract.png'
+    art_output_png_path = 'static/images/abstract_art.png'
     stable_diffusion.get_abstract_art(mood_description, art_output_png_path)
-
-    return send_file(art_output_png_path, mimetype='image/png')
-
+    return jsonify({
+                'brainwave-art': url_for('serve_image', filename=art_output_png_path),
+            })
 
 @app.route('/get-music', methods=['POST'])
 @cross_origin()
@@ -144,16 +144,15 @@ def get_advice():
     # return Response(gemini_RAG.get_advice(mood_description), content_type='text/event-stream')
 
 
-@app.route('/analyze-image', methods=['GET', 'POST'])
+@app.route('/analyze-image', methods=['GET'])
 @cross_origin()
 def analyze_image():
 
-    mood = request.form.get('mood')
-    art = request.files['art']
+    mood = request.args.get('mood')
+    analysis_input_png_path = request.args.get('art')
 
-    analysis_input_png_path = 'analysis_art.png'
-    art.save(analysis_input_png_path)
-    
+    analysis_input_png_path = 'static/images/abstract_art.png'
+    print(analysis_input_png_path)
     return {
         'result': gemini.get_analysis(mood, analysis_input_png_path)
     }

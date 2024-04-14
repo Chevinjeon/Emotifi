@@ -2,8 +2,9 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import './ImageGenerator.css';
 import { useMood } from '../../Context/MoodContext';
+import { fetchAnalysisResult } from '../../Components/ImageSentimentAnalyzer'
 
-const ImageGenerator = () => {
+const ImageGenerator = ({ setGeneratedArt }) => {
   const [imageUrl, setImageUrl] = useState('');
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -18,19 +19,27 @@ const ImageGenerator = () => {
   const fetchGeneratedImage = () => {
     setLoading(true);
     setError('');
-    const apiUrl = 'http://localhost:5001/get-art';
-    const postData = { mood: mood }; // Using mood from the context
+    console.log(mood);
+    
+    const apiUrl = `http://localhost:5001/get-art?mood=${mood}`;
+    const postData = { 'mood': mood }; // Using mood from the context
 
+    /*
     axios.post(apiUrl, postData, {
         headers: {
             'Content-Type': 'application/json'
         },
         responseType: 'blob'
     })
+    */
+    axios.get(apiUrl)
     .then(response => {
       const url = URL.createObjectURL(new Blob([response.data]));
-      setImageUrl(url);
-        setLoading(false);
+      setImageUrl(`http://localhost:5001/images/abstract_art.png`)
+      setLoading(false);
+
+      // call sentiment analyzer
+      setGeneratedArt(true)
     })
     .catch(err => {
         setError('Failed to load generated image. ' + err.message);

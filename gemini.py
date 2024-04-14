@@ -22,9 +22,14 @@ def get_analysis(mood, img_path):
     Their current mood is {mood}. The artwork was created based on the mood they are feeling.
     Tell us your artistic interpretation of the art and how the person with ADHD might be feeling at the psychological level.
     """
+    
 
     response = vision_model.generate_content([prompt, img], stream=False)
-    return response.text
+    response = response.text
+    
+    print(response)
+    
+    return response
 
 def get_music(mood):
 
