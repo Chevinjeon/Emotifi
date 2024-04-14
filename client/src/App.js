@@ -16,8 +16,11 @@ import InferMoodComponent from './Components/InferMoodComponent'; // Adjust path
 let animationController;
 
 function App() {
+
   let [recordOption, setRecordOption] = useState("audio");
   // Existing state and refs (video constants)
+
+  const [mood, setMood] = useState(null)
   const [isLoading, setIsLoading] = useState(false);
   const [showArrow, setShowArrow] = useState(false);
   const [selection, setSelection] = useState(false);
@@ -44,7 +47,7 @@ function App() {
     setArt(generatedArt);
 };
 
-  const { mood, setMood } = useMood() ?? {};
+  // const { mood, setMood } = useMood() ?? {};
 
 
   //webaudio constants
@@ -174,16 +177,16 @@ const handleGenerateMidi = async () => {
                 </button>
       </div>
       <div>
-      {recordOption === "audio" ? <AudioRecorder /> : <AudioRecorder />}
+      {recordOption === "audio" ? <AudioRecorder setMood={setMood} mood={mood}/> : <AudioRecorder setMood={setMood} mood={mood}/>}
       </div>
-      <ImageGenerator isLoading={isLoading} setGeneratedArt={setGeneratedArt} />
+      <ImageGenerator isLoading={isLoading} setGeneratedArt={setGeneratedArt} mood={mood} />
       {showArrow && (
         <div className="scroll-down">
           <FaArrowDown />
           <p>Scroll Down</p>
         </div>
       )}
-      <ImageSentimentAnalyzer generatedArt={generatedArt}/>
+      <ImageSentimentAnalyzer generatedArt={generatedArt} mood={mood}/>
       
 
 <div className="music-generator-heading">

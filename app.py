@@ -58,12 +58,11 @@ def infer_mood_brainwave():
 @app.route('/infer-mood-audio', methods=['POST'])
 @cross_origin()
 def infer_mood_audio():
-    assert(request.files['audio'].filename.endswith('.mp3'))
 
-    audio = request.files['audio']
+    audio_blob = request.form.get('audio')
+    print(type(audio_blob))
+    exit()
 
-    audio_input_mp3_path = 'speech.mp3'
-    audio.save(audio_input_mp3_path)
     mood_result = gemini.get_mood_from_audio(audio_input_mp3_path)
 
     return {
@@ -120,12 +119,11 @@ def get_music():
 
     return send_file(music_output_midi_path, mimetype='audio/midi')
 
-@app.route('/get-advice', methods=['POST'])
+@app.route('/get-advice', methods=['GET'])
 @cross_origin()
 def get_advice():
 
-    mood = request.form.get('mood')
-    
+    mood = request.args.get('mood')
     
     if mood == 'excited':
         mood_description = 'excited and energetic'
@@ -150,12 +148,16 @@ def analyze_image():
 
     mood = request.args.get('mood')
     analysis_input_png_path = request.args.get('art')
+    onload = request.args.get('onload')
 
-    analysis_input_png_path = 'static/images/abstract_art.png'
-    print(analysis_input_png_path)
-    return {
-        'result': gemini.get_analysis(mood, analysis_input_png_path)
-    }
+    if onload == 'true':
+        return {
+            'result': 'No art generated'
+        }
+    else:
+        return {
+            'result': gemini.get_analysis(mood, analysis_input_png_path)
+        }
 
 
 @app.route('/infer-mood-hardcoded', methods=['POST'])
