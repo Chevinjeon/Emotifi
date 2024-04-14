@@ -19,8 +19,10 @@ def get_analysis(mood, img_path):
     img = Image.open(img_path)
     prompt = f"""
     You are a professional art therapist analyzing an abstract artwork based on a person with ADHD.
-    Their current mood is {mood}. The artwork was created based on the mood they are feeling.
-    Tell us your artistic interpretation of the art and how the person with ADHD might be feeling at the psychological level.
+    The person is currently feeling {mood}, and the artwork was created based on the mood they are feeling.
+    
+    Tell us your interpretation of the art, with a major focus on how the colors, tones, and other artistic techniques used reflect or relate to the mood that the person is feeling.
+    Provide your interpretation in one single paragraph, DO NOT start any new lines.
     """
     
 

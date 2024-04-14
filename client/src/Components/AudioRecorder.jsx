@@ -63,15 +63,10 @@ const AudioRecorder = ({ setMood, mood }) => {
             const audioUrl = URL.createObjectURL(audioBlob)
             setAudio(audioUrl);
             setAudioChunks([])
-            
-            let fd = new FormData()
-            fd.append('audio', audioBlob)
-
-            const response = await fetch('http://localhost:5001/infer-mood-audio', {
-                method: 'POST',
-                body: fd
-            })
+ 
+            const response = await fetch('http://localhost:5001/infer-mood-audio')
             const data = await response.json()
+            setInferred(true)
             setMood(data['result'])
         }
     }
@@ -79,7 +74,7 @@ const AudioRecorder = ({ setMood, mood }) => {
     
     return (
         <div>
-            <h2>Audio Recorder</h2>
+            <h1>Use an Audio Recording</h1>
             <main>
                 <div className="audio-controls">
                     {!permission ? (
@@ -97,14 +92,18 @@ const AudioRecorder = ({ setMood, mood }) => {
                             Stop Recording
                         </button>
                     ): null}
-                    {audio ? (
+                    {audio && !inferred ? (
                         <div className='audio-container'>
                             <audio src={audio} controls></audio>
+                            <h3>Analyzing mood ... </h3>
                         </div>
                     ): null}
-                    {inferred? (
-                        <p>Current mood: {mood}</p>
-                    ) : null}
+                    {audio && inferred? (
+                        <div>
+                            <audio src={audio} controls></audio>
+                            <h3>Current mood: {mood}</h3>
+                        </div>
+                    ) : null }
                 </div>
             </main>
         </div>

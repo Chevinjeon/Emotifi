@@ -16,7 +16,7 @@
     right: 0;
     background-color: rgba(130, 225, 190, 0.8); /* Semi-transparent white background */
     padding: 50px;
-    width: 600px; /* Adjust width as needed */
+    width: 300px; /* Adjust width as needed */
     height: 240px; /* Adjust height as needed */
     overflow-y: auto; /* Enable vertical scrolling */
     border-radius: 30px; /* Optional: rounded corners */

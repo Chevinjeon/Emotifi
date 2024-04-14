@@ -41,8 +41,8 @@ llm = ChatGoogleGenerativeAI(model='gemini-pro', google_api_key=GEMINI_API_KEY, 
 """ ADVICE API """
 
 advice_raw = """You are a medical professional who will give useful advice to a ADHD patient who is feeling {mood}
-Use the provided context on ADHD treatments and therapy to give advice in bullet point form.
-Be sure to include a kind introduction and closing.
+Use the provided context on ADHD treatments and therapy to give advice in one single paragraph.
+DO NOT start new lines, and DO NOT include any form of introduction or closing.
 
 context: {context}
 """

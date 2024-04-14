@@ -4,7 +4,7 @@ import './DropdownComponent.css';
 import startbutton from '../Assets/startbutton.png'; // Adjust the path as needed
 import PropTypes from 'prop-types';
 
-const DropDownComponent = ({onSelect, handleImageUpdate}) => {
+const DropDownComponent = ({onSelect, handleImageUpdate, setIsReading, setMood}) => {
   const [selection, setSelection] = useState('');
   const [showReading, setShowReading] = useState(false);
   const [isLoading, setIsLoading] = useState(false); // State to manage loading indicator
@@ -16,6 +16,8 @@ const DropDownComponent = ({onSelect, handleImageUpdate}) => {
   };
 
   const handleStartClick = async () => {
+    setMood('stressed')
+    setIsReading(true)
     if (!selection) {
         alert('Please make a selection first.');
         return;
@@ -24,32 +26,26 @@ const DropDownComponent = ({onSelect, handleImageUpdate}) => {
     setShowReading(true); //  state to show the ReadingComponent
 
     try {
-      const response = await fetch('http://localhost:5001/handle-selection', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ option: selection })
-    });
-    
-    if (response.ok) {
-      const data = await response.json();
-      console.log("Success:", data);
-      handleImageUpdate(
-        `http://localhost:5001/images/before_processing.png?${Date.now()}`,
-        `http://localhost:5001/images/after_processing.png?${Date.now()}`
-      );
-  } else {
-      const errorData = await response.text();  // Assuming the server might send plain text error messages
-      throw new Error(`Server responded with status ${response.status}: ${errorData}`);
-  }
-} catch (error) {
-  console.error('Error:', error.message);
-  alert(`Failed to fetch: ${error.message}`);
-} finally { 
-  setIsLoading(false); //end loading 
-}
-};
+      const response = await fetch('http://localhost:5001/infer-mood-brainwave')
+      setIsReading(false)
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Success:", data);
+        handleImageUpdate(
+          `http://localhost:5001/images/before_processing.png?${Date.now()}`,
+          `http://localhost:5001/images/after_processing.png?${Date.now()}`
+        );
+      } else {
+        const errorData = await response.text();  // Assuming the server might send plain text error messages
+        throw new Error(`Server responded with status ${response.status}: ${errorData}`);
+      }
+    } catch (error) {
+      console.error('Error:', error.message);
+      alert(`Failed to fetch: ${error.message}`);
+    } finally { 
+      setIsLoading(false); //end loading 
+    }
+  };
 
 
   return (

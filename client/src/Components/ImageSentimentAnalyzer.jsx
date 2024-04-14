@@ -78,30 +78,36 @@ const ImageSentimentAnalyzer = ({ generatedArt, mood }) => {
   return (
     <div>
     <div>
-      <h3>Analysis of Generated Artwork</h3>
+      <h1>Analysis of Generated Artwork</h1>
       {isLoading ? (
-        <p>Loading analysis...</p>
+        <h3>Loading analysis...</h3>
       ) : (
         <div>
-          <p>Analysis Result:</p>
+          <h3>Analysis Result:</h3>
           <p>{JSON.stringify(analysisResult)}</p>
         </div>
       )}
     </div>
     <div>
+      <h3>Advice</h3>
       {!adviceRequested? (
         <button onClick={requestAdvice} type='button'>
           Get advice
         </button>
       ): null}
       {adviceRequested && loadingAdvice === true? (
-        <p>Loading advice ...</p>
+        <h3>Loading advice ...</h3>
       ): (
-        <p>{JSON.stringify(adviceResult)}</p>
+        <div>
+          <p>{JSON.stringify(adviceResult)}</p>
+        </div>
       )}
       </div>
     </div>
+    
   );
 };
 
 export default ImageSentimentAnalyzer;
+
+//<iframe src="https://open.spotify.com/embed/playlist/37i9dQZF1EIgG2NEOhqsD7?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>

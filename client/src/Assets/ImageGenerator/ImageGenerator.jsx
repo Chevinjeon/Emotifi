@@ -4,11 +4,11 @@ import './ImageGenerator.css';
 import { useMood } from '../../Context/MoodContext';
 import { fetchAnalysisResult } from '../../Components/ImageSentimentAnalyzer'
 
-const ImageGenerator = ({ setGeneratedArt }) => {
+const ImageGenerator = ({ setGeneratedArt, mood }) => {
   const [imageUrl, setImageUrl] = useState('');
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const { mood } = useMood(); // Use the mood from context
+  // const { mood } = useMood(); // Use the mood from context
 
   useEffect(() => {
     if (!mood) {
@@ -64,7 +64,6 @@ const ImageGenerator = ({ setGeneratedArt }) => {
       <div className="generate-btn" onClick={fetchGeneratedImage}>
         Request Image
       </div>
-      <iframe src="https://open.spotify.com/embed/playlist/37i9dQZF1EIgG2NEOhqsD7?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
     </div>
   );
 };

@@ -29,41 +29,33 @@ r"/infer-mood-brainwave": {"origins": "http://localhost:3000", "methods": ["POST
 })
 
 
-@app.route('/stream')
-def stream():
-    def event_stream():
-        count = 0
-        while True:
-            time.sleep(1)  # Simulate delay
-            count += 1
-            yield f"data: Server time {time.ctime()} count {count}\n\n"
-            if count == 10:
-                break
 
-    return Response(event_stream(), mimetype='text/event-stream')
-
-@app.route('/infer-mood-brainwave', methods=['POST'])
-@cross_origin(origins="http://localhost:3000", methods=["POST"], allow_headers=["Content-Type", "Authorization"])
+@app.route('/infer-mood-brainwave', methods=['GET'])
+@cross_origin(origins="http://localhost:3000", methods=["GET"])
 def infer_mood_brainwave():
-    assert(request.files['eeg'].filename.endswith('.csv'))
+    # assert(request.files['eeg'].filename.endswith('.csv'))
     
     eeg_input_csv_path = 'eeg.csv'
-    request.files['eeg'].save(eeg_input_csv_path)
+    
+    # request.files['eeg'].save(eeg_input_csv_path)
 
+    return {
+        'result': 'stressed'
+    }
+    """
     mood_result = eeg_analyzer.infer(eeg_input_csv_path)
     return {
         'result': mood_result
     }
+    """
 
-@app.route('/infer-mood-audio', methods=['POST'])
+@app.route('/infer-mood-audio', methods=['GET'])
 @cross_origin()
 def infer_mood_audio():
 
-    audio_blob = request.form.get('audio')
-    print(type(audio_blob))
-    exit()
+    mp3_input_path = 'audio.mp3'
 
-    mood_result = gemini.get_mood_from_audio(audio_input_mp3_path)
+    mood_result = gemini.get_mood_from_audio(mp3_input_path)
 
     return {
         'result': mood_result
@@ -93,14 +85,14 @@ def get_art():
                 'brainwave-art': url_for('serve_image', filename=art_output_png_path),
             })
 
-@app.route('/get-music', methods=['POST'])
+@app.route('/get-music', methods=['GET'])
 @cross_origin()
 def get_music():
 
-    music_output_midi_path = 'music.mid'
-    os.remove(music_output_midi_path)
 
-    mood = request.form.get('mood')
+    music_output_midi_path = 'music.mid'
+
+    mood = request.args.get('mood')
 
     if mood == 'excited':
         mood_description = 'excited and energetic'
@@ -117,7 +109,10 @@ def get_music():
     notes = gemini.get_music(mood_description)
     create_audio.create_midi(notes, music_output_midi_path)
 
-    return send_file(music_output_midi_path, mimetype='audio/midi')
+    return {
+        "result": "completed"
+    }
+
 
 @app.route('/get-advice', methods=['GET'])
 @cross_origin()

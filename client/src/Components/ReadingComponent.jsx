@@ -28,7 +28,6 @@ const ReadingComponent = ({ isLoading, stopVideo }) => {
         height="1080"
         autoPlay
         muted
-        loop
         preload="auto"
         controls
         style={{ display: isLoading ? 'none' : 'block' }}  // Hide video while loading
