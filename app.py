@@ -90,7 +90,7 @@ def get_art():
 def get_music():
 
 
-    music_output_midi_path = 'music.mid'
+    music_output_midi_path = 'music-downloads/music.mid'
 
     mood = request.args.get('mood')
 
