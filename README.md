@@ -1,70 +1,46 @@
-# Getting Started with Create React App
+# Introducing Emotifi
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<img width="904" alt="1" src="https://github.com/JeffreyQin/Emotifi/assets/122770444/5f3f2411-060d-44cb-9974-50772d41df26">
 
-## Available Scripts
 
-In the project directory, you can run:
+<img width="884" alt="2" src="https://github.com/JeffreyQin/Emotifi/assets/122770444/ea022641-ddb1-4737-bc26-8d7b410c1fe6">
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+<img width="856" alt="3" src="https://github.com/JeffreyQin/Emotifi/assets/122770444/38eb1e45-348f-4a41-b3fd-285641c679c3">
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+<img width="860" alt="4" src="https://github.com/JeffreyQin/Emotifi/assets/122770444/59fa4c03-d75c-4a6d-b237-df576b3f8d1a">
 
-### `npm test`
+## Inspiration :red_circle:
+ADHD affects more than 8 million individuals worldwide. FMRI studies have shown that most adults with ADHD don’t know how to express feelings. However, as people with ADHD tend to excel in thinking outside the box, art therapy has proven to create natural moments to express thoughts and feelings in an environment that is often less threatening than talk therapy. 
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## What it does :yellow_circle:
+When the user puts on the OpenBCI headset powered by the Cyton board, we call a BrainFlow BoardShim API to filter their EEG(electroencephalogram). This process involves leveraging a bandpass filter called Butter Worth to decompose data into component frequency bands optimal for analyzing emotional state, from very low frequency Delta waves oscillating at 0.1 Hertz to high-frequency Gamma waves oscillating at 40 Hertz. This pre-processed data is fed to a mood classifier ML model with LSTM layers which we have labelled and recorded for 3 hours, effectively extracting the FFT (Fast-Fourier-Transformation) model. 
+We also provide users with the option to talk about their feelings through an audio recording which then leverages the Gemini 1.5 Pro multimodal ability of native audio understanding, to receive advice on ADHD management. 
+Through prompt engineering we make calls to Stable Diffusion and Gemini to generate art and MIDI file, respectively. 
 
-### `npm run build`
+## How we built it  :green_circle:
+Emotify.AI uses Vertex AI Gemini Pro enhanced with RAG (Retrieval-Augmented Generation) on culture-specific ADHD medical literature to provide advice on managing behaviour using Gemini’s embedding service. Emotifi leverages the multimodal Gemini Vision AI to perform sentiment analysis on the EEG-generated artwork, a pipeline which has been fine-tuned with publications of clinical methodology in Jungian psychology to simulate a professional art therapy session. We used Model.generate_content with multimodal input. Text-to-music
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Accomplishments we’re proud of :large_blue_circle:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Bringing intelligence to wellness. 
+Building an interactive, fully functional software application to help those facing difficulties expressing their emotions by providing a creative outlet through visual and auditory mediums. 
+Operating and collaborating under a time constraint. 
+We're especially happy that we had the opportunity to use the newest Gemini features along with the hardware in our hack, as it provides a unique aspect to our solution.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## What we learned :white_circle:
+We learned a lot about the new horizons and current limitations of multimodal ai models. Navigating the Google-Gemini Cookbook we learned to use SafetyRatings check for the genai.GenerateContentResponse to ensure user safety. Multimodal Retrieval Augmented Generation(MM-RAG): Augmenting the generation from Large Multimodal Models(LMMs) with multimodal retrieval of images and more
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Challenges we ran into :black_circle:
+Streaming to the frontend was not very feasible, although we spent extensive hours trying to implement it, we could only handle return chunks of the response in the backend, using the Python SDK. We tried looking into server-sent events (SSE) protocol and JavaScript APIs (Fetch)  to send a one-time analysis result using the text/event-stream MIME type, but further investigation is needed. 
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+# Built with 
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- **Frontend**: React, HTML/CSS, JavaScript
+- **Hardware**: OpenBCI, Brainflow
+- **Backend**: Flask, Gemini API, LangChain (for Retrieval-augmented generation), Stable Diffusion API
+- **Machine learning**: PyTorch, NumPy, Pandas
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## What’s next for Emotify.AI
+We're thinking of building a 'Be Real' like social media plattform, where people will be able to post the art they generated on a daily basis to their peers. We're also planning on improving the brain2music feature using MusicLM from Google's AI Test Kitchen, where users can not only see how they feel, but what it sounds like as well. 
